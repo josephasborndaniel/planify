@@ -112,7 +112,7 @@ export function PlateArchitect() {
             <div className="flex items-center justify-center gap-6 px-4 pb-5" style={{ background: isDark ? '#1a1025' : '#faf8ff' }}>
               {/* Plate */}
               <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex-shrink-0">
-                <img src={plateImg} alt="Plate" className="w-full h-full object-contain drop-shadow-xl" />
+                <img loading="lazy" src={plateImg} alt="Plate" className="w-full h-full object-contain drop-shadow-xl" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   {selectedItems.length === 0 && (
                     <p className="text-[10px] text-center italic px-4" style={{ color: textMuted }}>Select dishes to populate</p>
@@ -131,7 +131,7 @@ export function PlateArchitect() {
                         >
                           <div className="relative">
                             <div className="w-12 h-12 rounded-full overflow-hidden shadow-md border-2 border-white">
-                              <img src={item.imgUrl} alt={item.name} className="w-full h-full object-cover" />
+                              <img loading="lazy" src={item.imgUrl} alt={item.name} className="w-full h-full object-cover" />
                             </div>
                             <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black text-white" style={{ background: purple }}>
                               {item.quantity}
@@ -151,7 +151,7 @@ export function PlateArchitect() {
                   {selectedDrinks.map(drink => (
                     <div key={drink.id} className="flex flex-col items-center gap-1 animate-in fade-in zoom-in-75">
                       <div className="w-14 h-20 rounded-xl overflow-hidden shadow-md">
-                        <img src={drink.imgUrl} alt={drink.name} className="w-full h-full object-cover" />
+                        <img loading="lazy" src={drink.imgUrl} alt={drink.name} className="w-full h-full object-cover" />
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: purple, color: '#fff' }}>×{drink.quantity}</span>
                       <p className="text-[9px] text-center font-medium max-w-16" style={{ color: textMuted }}>{drink.name}</p>
@@ -211,7 +211,7 @@ export function PlateArchitect() {
                       }}
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <img src={item.imgUrl} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" alt={item.name} />
+                        <img loading="lazy" src={item.imgUrl} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" alt={item.name} />
                         <div className="min-w-0">
                           <p className="text-xs font-bold leading-tight line-clamp-2" style={{ color: text }}>{item.name}</p>
                           <p className="text-[10px] mt-0.5 font-semibold" style={{ color: purple }}>₹{item.pricePerPlate}/plate</p>

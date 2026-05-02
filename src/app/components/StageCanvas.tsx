@@ -205,7 +205,7 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
 
       {/* Image Display */}
       <div className="relative flex items-center justify-center">
-        <img
+        <img loading="lazy"
           src={item.image}
           alt={item.name}
           className={`w-full h-auto object-contain transition-all ${
@@ -280,7 +280,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
         style={{ maxWidth: '900px', margin: '0 auto', touchAction: 'none' }}
       >
         {backgroundImage ? (
-          <img 
+          <img loading="lazy" 
             src={backgroundImage}
             alt="background"
             className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none opacity-90"

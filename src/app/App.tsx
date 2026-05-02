@@ -177,7 +177,7 @@ export default function App() {
 
           {/* Image Carousel */}
           <div className="relative w-full aspect-video overflow-hidden">
-            <img src={currentDesign.image} alt={currentDesign.title} className="w-full h-full object-cover" />
+            <img loading="lazy" src={currentDesign.image} alt={currentDesign.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 flex items-center justify-between px-3">
               <button onClick={handlePrevDesign} className="w-9 h-9 bg-black/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center active:scale-90 transition-all">
                 <ArrowLeft className="w-4 h-4" />
@@ -422,7 +422,7 @@ export default function App() {
                         style={{ border: `1px solid ${border}`, background: card }}
                       >
                         <div className="aspect-[4/3] relative overflow-hidden">
-                          <img src={plan.coverImage} alt={plan.name} className="w-full h-full object-cover" />
+                          <img loading="lazy" src={plan.coverImage} alt={plan.name} className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                           <span className="absolute bottom-2 left-2 text-[10px] font-black text-white uppercase tracking-wide bg-black/30 backdrop-blur-sm px-2 py-0.5 rounded-full">
                             {tier.badge}

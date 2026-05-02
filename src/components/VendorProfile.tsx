@@ -97,7 +97,7 @@ export function VendorProfilePage() {
 
       {/* Hero Banner */}
       <div className="relative h-48 overflow-hidden">
-        <img src={DEMO_GALLERY[galleryIdx]} alt="Vendor" className="w-full h-full object-cover" />
+        <img loading="lazy" src={DEMO_GALLERY[galleryIdx]} alt="Vendor" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center gap-2">
@@ -171,7 +171,7 @@ export function VendorProfilePage() {
                 className="aspect-video rounded-2xl overflow-hidden transition-all active:scale-95"
                 style={{ border: i === galleryIdx ? `2px solid ${accent}` : `1px solid ${border}` }}
               >
-                <img src={img} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+                <img loading="lazy" src={img} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

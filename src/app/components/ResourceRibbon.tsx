@@ -159,7 +159,7 @@ function DraggableResourceCard({ item }: { item: ResourceItem }) {
       style={{ touchAction: 'none', background: card, border: `1px solid ${border}` }}
     >
       <div className="w-full h-16 sm:h-20 overflow-hidden flex items-center justify-center p-1" style={{ background: isDark ? '#2d1e45' : '#c8e4ff' }}>
-        <img
+        <img loading="lazy"
           src={item.image}
           alt={item.name}
           className="max-w-full max-h-full object-contain transition-transform duration-200"
