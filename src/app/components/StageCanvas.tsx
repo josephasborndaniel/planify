@@ -274,7 +274,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           canvasRef.current = node;
           drop(node);
         }}
-        className={`relative w-full h-[500px] md:h-[650px] rounded-3xl shadow-2xl transition-all overflow-hidden bg-[#1a1a1a] touch-none ${
+        className={`relative w-full aspect-[4/3] md:h-[650px] rounded-3xl shadow-2xl transition-all overflow-hidden bg-[#1a1a1a] touch-none ${
           isOver ? 'ring-4 ring-[#d4af37]' : 'ring-1 ring-gray-200'
         }`}
         style={{ maxWidth: '900px', margin: '0 auto', touchAction: 'none' }}
@@ -283,7 +283,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           <img 
             src={backgroundImage}
             alt="background"
-            className="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-90"
+            className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none opacity-90"
             style={{ zIndex: 0 }}
           />
         ) : (
