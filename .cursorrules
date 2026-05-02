@@ -1,0 +1,24 @@
+# Planify Mobile-First "Tropical Punch" Design Rules
+
+You are a Senior Product Designer. Transform Planify into a vibrant, high-end, mobile-first SaaS using the "Tropical Punch" palette. Focus on extreme vertical space efficiency.
+
+## 1. Visual Identity: "Tropical Punch" Palette
+- **Main Background:** `#FCE883` (Soft Yellow) – keep it light and airy.
+- **Primary Action/Text:** `#069494` (Teal) – used for main headers and high-priority buttons.
+- **Secondary Surfaces:** `#FFC0CB` (Soft Pink) – used for card backgrounds and subtle sectioning.
+- **Accent/Highlights:** `#FF8243` (Vibrant Orange) – used for price badges, "New" tags, and call-to-actions.
+
+## 2. Mobile-First Layout (Scroll Reduction)
+- **Bento Dashboard:** Convert the vertical event list into a 2-column bento grid. Each card should be compact with a small icon and title to fit 4+ events on the screen without scrolling.
+- **Horizontal Reels:** Instead of stacking tiered plans (Budget/Standard/Premium), use a horizontal scroll (`flex-nowrap overflow-x-auto`).
+- **Reduced Padding:** Use a strict spacing scale of 8px. Change large paddings (like `p-10`) to `p-3` or `p-4` on mobile.
+- **Sticky Actions:** Ensure the "Export PDF" or "Total Cost" buttons are either in a sticky footer or a compact floating badge to save space.
+
+## 3. Component Fixes
+- **Stage Canvas:** Must use `aspect-[4/3]` and `object-cover object-bottom` to ensure the stage floor and sofa are visible without vertical scrolling.
+- **Plate Architect:** Refactor the menu selection into a "Horizontal Drawer" or a more compact 2-column list to reduce the page height.
+- **Safe Navigation:** All navigation must use React `onClick` syntax: `onClick={() => setActiveScreen('home')}`.
+
+## 4. Elegance & Interaction
+- **Glassmorphism:** Apply `bg-white/40 backdrop-blur-md border border-white/20` to the header and floating badges.
+- **Feedback:** Use `active:scale-95 transition-transform` for all touch targets.

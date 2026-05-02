@@ -1,6 +1,7 @@
 import { useDrag } from 'react-dnd';
 import { Flower2, Armchair, Lightbulb, Wind, Gift, SquareStack } from 'lucide-react';
 import { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import flowerImg from './flower.png';
 import manImg from './many-removebg.png';
 import stgImg from './image.png';
@@ -137,58 +138,48 @@ const resources: ResourceItem[] = [
 ];
 
 function DraggableResourceCard({ item }: { item: ResourceItem }) {
+  const { isDark } = useTheme();
   const [{ isDragging }, drag] = useDrag({
     type: 'RESOURCE_ITEM',
-    item: { 
-      id: item.id, 
-      name: item.name, 
-      price: item.price, 
-      category: item.category, 
-      image: item.image, 
-      isBackground: item.isBackground 
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
+    item: { id: item.id, name: item.name, price: item.price, category: item.category, image: item.image, isBackground: item.isBackground },
+    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
   });
+
+  const card = isDark ? '#231534' : '#ddeeff';
+  const border = isDark ? 'rgba(192,156,222,0.25)' : 'rgba(42,125,212,0.18)';
+  const text = isDark ? '#f0e6ff' : '#0d2d52';
+  const textMuted = isDark ? 'rgba(240,230,255,0.5)' : '#7b5aa6';
 
   return (
     <div
       ref={drag}
-      className={`flex-shrink-0 w-28 sm:w-32 md:w-36 bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm cursor-move touch-none hover:shadow-lg hover:border-[#d4af37] transition-all ${
-        isDragging ? 'opacity-50 scale-95' : ''
+      className={`flex-shrink-0 w-24 sm:w-28 rounded-2xl overflow-hidden cursor-move touch-none transition-all ${
+        isDragging ? 'opacity-40 scale-90' : 'hover:scale-105'
       }`}
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: 'none', background: card, border: `1px solid ${border}` }}
     >
-      <div className="flex flex-col h-full">
-        {/* Container for the image */}
-        <div className="w-full h-20 sm:h-24 md:h-28 bg-white overflow-hidden flex items-center justify-center p-1">
-          <img 
-            src={item.image} 
-            alt={item.name}
-            /* object-contain ensures the full image is visible without cropping */
-            className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-200"
-            onError={(e) => {
-              e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/></svg>';
-            }}
-          />
-        </div>
-        <div className="p-1 sm:p-2 flex-1 flex flex-col justify-between">
-          <div className="text-center">
-            <div className="text-xs sm:text-sm font-medium text-gray-800 line-clamp-2 h-6 sm:h-7">
-              {item.name}
-            </div>
-          </div>
-          <div className="text-xs sm:text-sm font-bold text-[#d4af37] text-center">
-            ₹{item.price.toLocaleString('en-IN')}
-          </div>
-        </div>
+      <div className="w-full h-16 sm:h-20 overflow-hidden flex items-center justify-center p-1" style={{ background: isDark ? '#2d1e45' : '#c8e4ff' }}>
+        <img
+          src={item.image}
+          alt={item.name}
+          className="max-w-full max-h-full object-contain transition-transform duration-200"
+          onError={(e) => {
+            e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/></svg>';
+          }}
+        />
+      </div>
+      <div className="p-1.5 text-center">
+        <p className="text-[10px] font-semibold line-clamp-2 leading-tight" style={{ color: text }}>{item.name}</p>
+        {item.price > 0 && (
+          <p className="text-[10px] font-black mt-0.5" style={{ color: '#c09cde' }}>₹{item.price.toLocaleString('en-IN')}</p>
+        )}
       </div>
     </div>
   );
 }
 
 export function ResourceRibbon() {
+  const { isDark } = useTheme();
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
   const categories = ['All', 'Stage Background', 'Decor', 'Infrastructure', 'Lighting'];
@@ -196,19 +187,24 @@ export function ResourceRibbon() {
     ? resources
     : resources.filter(r => r.category === activeCategory);
 
+  const bg = isDark ? '#1a1025' : '#f0f7ff';
+  const border = isDark ? 'rgba(192,156,222,0.2)' : 'rgba(42,125,212,0.18)';
+  const text = isDark ? '#f0e6ff' : '#0d2d52';
+  const purple = isDark ? '#c09cde' : '#2a7dd4';
+
   return (
-    <div className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] border-t-4 border-[#d4af37] shadow-2xl">
+    <div style={{ background: bg, borderTop: `1px solid ${border}` }}>
       {/* Category Tabs */}
-      <div className="flex gap-1 sm:gap-2 px-2 sm:px-4 pt-2 sm:pt-4 overflow-x-auto">
-        {categories.map((cat) => (
+      <div className="flex gap-1.5 px-3 pt-3 overflow-x-auto">
+        {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-2 sm:px-4 py-2 rounded-t-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
-              activeCategory === cat
-                ? 'bg-white text-[#0a1628]'
-                : 'bg-[#1e3a5f] text-white hover:bg-[#2a4a7f]'
-            }`}
+            className="px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap transition-all active:scale-95"
+            style={{
+              background: activeCategory === cat ? purple : (isDark ? '#2d1e45' : '#c8e4ff'),
+              color: activeCategory === cat ? '#fff' : text,
+            }}
           >
             {cat}
           </button>
@@ -216,9 +212,9 @@ export function ResourceRibbon() {
       </div>
 
       {/* Resource Cards */}
-      <div className="bg-white p-2 sm:p-4">
-        <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2">
-          {filteredResources.map((item) => (
+      <div className="p-3">
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {filteredResources.map(item => (
             <DraggableResourceCard key={item.id} item={item} />
           ))}
         </div>

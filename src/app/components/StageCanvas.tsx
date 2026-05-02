@@ -181,9 +181,9 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
           <div 
             onMouseDown={handleRotateStart}
             onTouchStart={handleRotateStart}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border-2 border-[#d4af37] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-[70] shadow-md touch-none"
+            className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#FFFFFF] border-2 border-[#c09cde] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-[70] shadow-md touch-none"
           >
-            <RotateCw className="w-4 h-4 text-[#0a1628]" />
+            <RotateCw className="w-4 h-4 text-[#c09cde]" />
           </div>
 
           <div 
@@ -196,7 +196,7 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
           <div 
             onMouseDown={handleResizeStart}
             onTouchStart={handleResizeStart}
-            className="absolute -bottom-4 -right-4 w-8 h-8 bg-[#d4af37] rounded-full flex items-center justify-center cursor-nwse-resize z-[70] shadow-lg border-2 border-white touch-none"
+            className="absolute -bottom-4 -right-4 w-8 h-8 bg-[#c09cde] rounded-full flex items-center justify-center cursor-nwse-resize z-[70] shadow-lg border-2 border-white touch-none"
           >
             <Maximize2 className="w-4 h-4 text-white" />
           </div>
@@ -209,7 +209,7 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
           src={item.image}
           alt={item.name}
           className={`w-full h-auto object-contain transition-all ${
-            isSelected ? 'ring-2 ring-[#d4af37] ring-offset-2 rounded-sm' : ''
+            isSelected ? 'ring-2 ring-[#c09cde] ring-offset-2 rounded-sm' : ''
           }`}
           draggable={false}
         />
@@ -217,9 +217,9 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
 
       {/* Item Label */}
       {isSelected && scale > 0.6 && (
-        <div className="mt-2 p-1 text-center bg-[#0a1628]/90 backdrop-blur-sm rounded shadow-xl border border-gray-700 text-white">
+        <div className="mt-2 p-1 text-center bg-white/40 backdrop-blur-md rounded shadow-xl border border-[#c09cde] text-[#c09cde]">
           <div className="font-medium text-[10px] line-clamp-1">{item.name}</div>
-          <div className="text-[#d4af37] text-[10px] font-bold">₹{item.price}</div>
+          <div className="text-[#c09cde] text-[10px] font-bold">₹{item.price}</div>
         </div>
       )}
 
@@ -265,8 +265,8 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="text-xs sm:text-sm text-gray-600 bg-white shadow-sm border border-gray-100 px-4 py-2 rounded-full">
-        <span className="font-bold text-[#d4af37]">Stage Area:</span> 10m × 10m
+      <div className="text-xs sm:text-sm text-[#c09cde] bg-white/40 backdrop-blur-md border border-[#c09cde] px-4 py-2 rounded-full">
+        <span className="font-bold text-[#c09cde]">Stage Area:</span> 10m × 10m
       </div>
 
       <div
@@ -274,8 +274,8 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           canvasRef.current = node;
           drop(node);
         }}
-        className={`relative w-full aspect-[4/3] md:h-[650px] rounded-3xl shadow-2xl transition-all overflow-hidden bg-[#1a1a1a] touch-none ${
-          isOver ? 'ring-4 ring-[#d4af37]' : 'ring-1 ring-gray-200'
+        className={`relative w-full aspect-[4/3] md:h-[650px] rounded-3xl shadow-2xl transition-all overflow-hidden bg-[#ffffff] touch-none ${
+          isOver ? 'ring-4 ring-[#c09cde]' : 'ring-1 ring-[#c09cde]'
         }`}
         style={{ maxWidth: '900px', margin: '0 auto', touchAction: 'none' }}
       >
@@ -288,7 +288,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           />
         ) : (
           <div className="absolute inset-0 opacity-20" style={{ 
-            backgroundImage: 'radial-gradient(#d4af37 1px, transparent 1px)', 
+            backgroundImage: 'radial-gradient(#c09cde 1px, transparent 1px)', 
             backgroundSize: '30px 30px' 
           }} />
         )}
@@ -305,7 +305,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           ))}
 
           {droppedItems.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-500 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center text-[#c09cde] pointer-events-none">
               <div className="text-center">
                 <Maximize2 className="w-12 h-12 mx-auto mb-2 opacity-20" />
                 <p className="text-lg font-light">Stage is empty</p>

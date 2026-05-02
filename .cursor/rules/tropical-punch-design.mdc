@@ -1,0 +1,28 @@
+---
+description: Tropical Punch mobile-first product design rules for Planify
+alwaysApply: true
+---
+
+# Planify Mobile-First Tropical Punch Design Rules
+
+Use the Tropical Punch palette throughout the app:
+- Main background: `#FCE883`
+- Primary text and actions: `#069494`
+- Secondary surfaces and cards: `#FFC0CB`
+- Accent highlights and CTAs: `#FF8243`
+
+Optimize for extreme vertical space efficiency on mobile:
+- Use compact 2-column bento grids for event selection.
+- Prefer horizontal reels with `flex-nowrap overflow-x-auto` for plans and tier cards.
+- Use an 8px spacing rhythm; replace oversized mobile padding with `p-3` or `p-4`.
+- Keep totals and export actions sticky or floating when that reduces scrolling.
+
+Component rules:
+- `StageCanvas` must keep `aspect-[4/3]` and use `object-cover object-bottom`.
+- `PlateArchitect` should use compact 2-column or horizontal-drawer style menu selection.
+- All screen navigation must use React handlers like `onClick={() => setActiveScreen('home')}`.
+
+Interaction and finish:
+- Use glassmorphism for headers and floating badges: `bg-white/40 backdrop-blur-md border border-white/20`.
+- Add tactile feedback with `active:scale-95 transition-transform` on touch targets.
+- Keep the UI vibrant, premium, and mobile-first rather than dense desktop-styled layouts.
