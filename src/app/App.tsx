@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import { DesignStudio } from './components/DesignStudio';
 import { PlateArchitect } from './components/PlateArchitect';
 import { 
@@ -157,6 +158,9 @@ export default function App() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [currentDesignIndex, setCurrentDesignIndex] = useState(0);
   const [selectedDesign, setSelectedDesign] = useState<Design | null>(null);
+  const isTouchDevice =
+    typeof window !== 'undefined' &&
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
   const startDesign = (packageId: string | null = null) => {
     setActivePackage(packageId);
@@ -176,6 +180,7 @@ export default function App() {
       setCurrentDesignIndex((prev) => (prev - 1 + selectedPlan.designs.length) % selectedPlan.designs.length);
     }
   };
+  const goHome = () => setActiveScreen('home');
 
   if (selectedPlan) {
     const currentDesign = selectedPlan.designs[currentDesignIndex];
@@ -311,10 +316,17 @@ export default function App() {
 
   if (activeScreen === 'studio') {
     return (
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider
+        backend={isTouchDevice ? TouchBackend : HTML5Backend}
+        options={isTouchDevice ? { enableMouseEvents: true, delayTouchStart: 100 } : undefined}
+      >
         <DesignStudio initialPackage={activePackage} eventType={selectedEvent} />
         <button
-          onClick={() => setActiveScreen('home')}
+          onClick={goHome}
+          onTouchEnd={(event) => {
+            event.preventDefault();
+            goHome();
+          }}
           className="fixed top-4 left-4 z-50 bg-white text-[#0a1628] px-4 py-2 rounded-full shadow-lg font-medium hover:shadow-xl transition-all"
         >
           ← Back
