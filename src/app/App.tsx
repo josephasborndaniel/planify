@@ -217,7 +217,7 @@ export default function App() {
               <button
                 onClick={() => { setSelectedDesign(currentDesign); setSelectedPlan(null); setActivePackage(`${selectedEvent}-${selectedPlan.id}`); setActiveScreen('studio'); }}
                 className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
-                style={{ background: `linear-gradient(135deg, ${purple}, $(isDark ? isDark ? '#a07ac8' : '#5aa0e0' : '#5aa0e0'))`, color: '#fff' }}
+                style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
               >
                 Start with {currentDesign.title} →
               </button>
@@ -286,7 +286,7 @@ export default function App() {
       >
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${purple}, $(isDark ? isDark ? '#a07ac8' : '#5aa0e0' : '#5aa0e0'))` }}>
+            <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})` }}>
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -431,7 +431,7 @@ export default function App() {
               className="px-5 py-4 flex items-center gap-4"
               style={{ background: `linear-gradient(135deg, ${isDark ? '#2d1e45' : '#c8e4ff'}, ${isDark ? '#1a1025' : '#faf8ff'})` }}
             >
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, ${purple}, $(isDark ? isDark ? '#a07ac8' : '#5aa0e0' : '#5aa0e0'))` }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})` }}>
                 <UtensilsCrossed className="w-7 h-7 text-white" />
               </div>
               <div className="flex-1 min-w-0">

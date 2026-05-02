@@ -258,7 +258,7 @@ export function PlateArchitect() {
       >
         <button
           className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-lg"
-          style={{ background: `linear-gradient(135deg, ${purple}, $(isDark ? isDark ? '#a07ac8' : '#5aa0e0' : '#5aa0e0'))`, color: '#fff' }}
+          style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
         >
           <Download className="w-4 h-4" />
           Export PDF Quotation
