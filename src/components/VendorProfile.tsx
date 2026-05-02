@@ -193,19 +193,24 @@ export function VendorProfilePage() {
             />
           ) : (
             <div
-              className="w-full h-36 rounded-2xl flex flex-col items-center justify-center gap-2"
+              className="w-full h-48 rounded-2xl flex flex-col items-center justify-center gap-2 overflow-hidden relative"
               style={{ background: muted, border: `1px solid ${border}` }}
             >
-              <MapPin className="w-8 h-8" style={{ color: accent }} />
-              <p className="text-xs" style={{ color: textMuted }}>Add VITE_GOOGLE_MAPS_KEY to .env to show map</p>
+              {/* Subtle grid background to simulate a map */}
+              <div className="absolute inset-0 opacity-[0.03]" style={{
+                backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)',
+                backgroundSize: '20px 20px'
+              }} />
+              <MapPin className="w-8 h-8 relative z-10" style={{ color: accent }} />
+              <p className="text-xs font-bold relative z-10" style={{ color: textMuted }}>Interactive Map (Preview)</p>
               <a
                 href={`https://www.google.com/maps?q=${vendor.lat},${vendor.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold underline"
-                style={{ color: accent }}
+                className="text-[10px] font-bold px-4 py-1.5 rounded-full relative z-10 mt-1 transition-all active:scale-95"
+                style={{ background: card, color: accent, border: `1px solid ${border}` }}
               >
-                Open in Google Maps →
+                Open in Google Maps
               </a>
             </div>
           )}

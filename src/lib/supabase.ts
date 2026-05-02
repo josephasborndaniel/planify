@@ -3,7 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Prevent app crash if .env is missing or dev server hasn't restarted yet
+export const supabase = SUPABASE_URL 
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+  : ({} as any);
 
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 

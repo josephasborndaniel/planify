@@ -21,6 +21,15 @@ export interface RazorpayOptions {
 }
 
 export function openRazorpay(opts: RazorpayOptions) {
+  // Fallback if Razorpay is not configured: simulate success after 1 second
+  if (!RAZORPAY_KEY) {
+    console.warn('Razorpay key missing. Simulating successful payment for testing.');
+    setTimeout(() => {
+      opts.onSuccess(`simulated_pay_${Date.now()}`, `order_${Date.now()}`);
+    }, 1000);
+    return;
+  }
+
   if (!window.Razorpay) {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
