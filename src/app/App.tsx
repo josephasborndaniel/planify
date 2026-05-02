@@ -4,11 +4,14 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { DesignStudio } from './components/DesignStudio';
 import { PlateArchitect } from './components/PlateArchitect';
+import { QuoteGenerator } from '../components/QuoteGenerator';
+import { PaymentTracker } from '../components/PaymentTracker';
+import { VendorProfilePage } from '../components/VendorProfile';
 import { useTheme } from './context/ThemeContext';
 import {
   Heart, Cake, Baby, Home, Church, ArrowRight, ArrowLeft,
   Zap, ShieldCheck, Star, Ruler, Sparkles, UtensilsCrossed, X,
-  Sun, Moon, ChevronRight
+  Sun, Moon, ChevronRight, FileText, CreditCard, Building2, LayoutGrid
 } from 'lucide-react';
 
 interface Design {
@@ -112,7 +115,7 @@ function ThemeToggle() {
 
 export default function App() {
   const { isDark } = useTheme();
-  const [activeScreen, setActiveScreen] = useState<'home' | 'studio' | 'catering'>('home');
+  const [activeScreen, setActiveScreen] = useState<'home' | 'studio' | 'catering' | 'quotes' | 'payments' | 'profile'>('home');
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [activePackage, setActivePackage] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -271,9 +274,39 @@ export default function App() {
     );
   }
 
+  // ── QUOTE GENERATOR VIEW ───────────────────────────────────────────────────────
+  if (activeScreen === 'quotes') {
+    return (
+      <>
+        <QuoteGenerator />
+        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
+      </>
+    );
+  }
+
+  // ── PAYMENT TRACKER VIEW ───────────────────────────────────────────────────────
+  if (activeScreen === 'payments') {
+    return (
+      <>
+        <PaymentTracker />
+        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
+      </>
+    );
+  }
+
+  // ── VENDOR PROFILE VIEW ────────────────────────────────────────────────────────
+  if (activeScreen === 'profile') {
+    return (
+      <>
+        <VendorProfilePage />
+        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
+      </>
+    );
+  }
+
   // ── HOME VIEW ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: bg, color: text }}>
+    <div className="min-h-screen pb-20" style={{ background: bg, color: text }}>
 
       {/* ── HEADER ── */}
       <header
@@ -452,10 +485,53 @@ export default function App() {
 
       </div>
 
-      {/* ── FOOTER ── */}
-      <footer className="px-4 py-6 text-center" style={{ color: textMuted }}>
-        <p className="text-[10px] uppercase tracking-[0.2em]">Planify • Event Management • Est. 2026</p>
-      </footer>
+      {/* ── BOTTOM NAV ── */}
+      <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
     </div>
+  );
+}
+
+// ── Bottom Navigation Bar ─────────────────────────────────────────────────────
+type Screen = 'home' | 'studio' | 'catering' | 'quotes' | 'payments' | 'profile';
+
+function BottomNav({ active, onNav, isDark, border, card, text, purple }: {
+  active: Screen;
+  onNav: (s: Screen) => void;
+  isDark: boolean; border: string; card: string; text: string; purple: string;
+}) {
+  const items = [
+    { id: 'home' as Screen,     label: 'Home',    icon: <LayoutGrid className="w-5 h-5" /> },
+    { id: 'quotes' as Screen,   label: 'Quotes',  icon: <FileText className="w-5 h-5" /> },
+    { id: 'payments' as Screen, label: 'Pay',     icon: <CreditCard className="w-5 h-5" /> },
+    { id: 'profile' as Screen,  label: 'Vendor',  icon: <Building2 className="w-5 h-5" /> },
+  ];
+
+  return (
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around px-2 py-2 max-w-lg mx-auto"
+      style={{
+        background: isDark ? 'rgba(26,16,37,0.97)' : 'rgba(240,247,255,0.97)',
+        backdropFilter: 'blur(16px)',
+        borderTop: `1px solid ${border}`,
+      }}
+    >
+      {items.map(item => {
+        const isActive = active === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => onNav(item.id)}
+            className="flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-2xl transition-all active:scale-90"
+            style={{
+              background: isActive ? (isDark ? '#2d1e45' : '#c8e4ff') : 'transparent',
+              color: isActive ? purple : isDark ? 'rgba(240,230,255,0.4)' : 'rgba(13,45,82,0.45)',
+            }}
+          >
+            {item.icon}
+            <span className="text-[9px] font-bold">{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }

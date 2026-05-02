@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDrop } from 'react-dnd';
 import { ResourceRibbon } from './ResourceRibbon';
 import { StageCanvas } from './StageCanvas';
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee, Share2, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { buildWhatsAppLink, saveDesignToSupabase } from '../../lib/whatsapp';
 
 interface DroppedItem {
   id: string;
@@ -15,11 +15,17 @@ interface DroppedItem {
   y: number;
 }
 
-export function DesignStudio() {
+interface DesignStudioProps {
+  initialPackage?: string | null;
+  eventType?: string | null;
+}
+
+export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
   const { isDark } = useTheme();
   const [droppedItems, setDroppedItems] = useState<DroppedItem[]>([]);
   const [totalCost, setTotalCost] = useState(0);
   const [backgroundImage, setBackgroundImage] = useState<string>('');
+  const [sharing, setSharing] = useState(false);
 
   const bg = isDark ? '#1a1025' : '#f0f7ff';
   const card = isDark ? '#231534' : '#ddeeff';
@@ -56,13 +62,38 @@ export function DesignStudio() {
     ));
   };
 
+  // ── Feature 7: WhatsApp Share ──────────────────────────────────
+  const handleWhatsAppShare = async () => {
+    if (!droppedItems.length) return;
+    setSharing(true);
+
+    const itemList = droppedItems.map(i => ({ name: i.name, quantity: 1 }));
+    const canvasState = { items: droppedItems, background: backgroundImage };
+
+    // Save to Supabase and get shareable ID
+    const designId = await saveDesignToSupabase(
+      eventType ?? 'Event',
+      canvasState,
+      itemList,
+    );
+
+    const waLink = buildWhatsAppLink({
+      eventType: eventType ?? 'Event',
+      items: itemList,
+      designId: designId ?? undefined,
+    });
+
+    window.open(waLink, '_blank');
+    setSharing(false);
+  };
+
   return (
     <div className="flex flex-col h-screen" style={{ background: bg, color: text }}>
       {/* Header */}
       <div
         className="px-4 py-3 sticky top-0 z-10"
         style={{
-          background: isDark ? 'rgba(26,16,37,0.9)' : 'rgba(255,255,255,0.9)',
+          background: isDark ? 'rgba(26,16,37,0.9)' : 'rgba(240,247,255,0.9)',
           backdropFilter: 'blur(12px)',
           borderBottom: `1px solid ${border}`,
         }}
@@ -71,16 +102,34 @@ export function DesignStudio() {
         <p className="text-xs mt-0.5" style={{ color: textMuted }}>Drag items to build your stage layout</p>
       </div>
 
-      {/* Total Cost Badge */}
-      <div
-        className="fixed top-16 right-3 z-20 flex items-center gap-2 px-3 py-2 rounded-full text-sm shadow-lg"
-        style={{ background: card, border: `1px solid ${border}`, color: text }}
-      >
-        <IndianRupee className="w-4 h-4" style={{ color: purple }} />
-        <div>
-          <div className="text-[10px] hidden sm:block" style={{ color: textMuted }}>Total</div>
-          <div className="font-black text-sm">₹{totalCost.toLocaleString('en-IN')}</div>
+      {/* Top-right buttons */}
+      <div className="fixed top-14 right-3 z-20 flex flex-col gap-2">
+        {/* Total Cost Badge */}
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-full text-sm shadow-lg"
+          style={{ background: card, border: `1px solid ${border}`, color: text }}
+        >
+          <IndianRupee className="w-4 h-4" style={{ color: purple }} />
+          <div>
+            <div className="text-[10px] hidden sm:block" style={{ color: textMuted }}>Total</div>
+            <div className="font-black text-sm">₹{totalCost.toLocaleString('en-IN')}</div>
+          </div>
         </div>
+
+        {/* WhatsApp Share */}
+        <button
+          onClick={handleWhatsAppShare}
+          disabled={sharing || droppedItems.length === 0}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-bold shadow-lg transition-all active:scale-95 disabled:opacity-40"
+          style={{ background: '#25d366', color: '#fff' }}
+          title="Share via WhatsApp"
+        >
+          {sharing
+            ? <Loader2 className="w-4 h-4 animate-spin" />
+            : <Share2 className="w-4 h-4" />
+          }
+          <span className="hidden sm:inline">Share</span>
+        </button>
       </div>
 
       {/* Canvas */}
