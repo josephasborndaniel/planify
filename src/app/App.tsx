@@ -9,7 +9,7 @@ import { PaymentTracker } from '../components/PaymentTracker';
 import { VendorProfilePage } from '../components/VendorProfile';
 import { useTheme } from './context/ThemeContext';
 import {
-  Heart, Cake, Baby, Home, Church, ArrowRight, ArrowLeft,
+  Users, Cake, Baby, Home, Church, ArrowRight, ArrowLeft,
   Zap, ShieldCheck, Star, Ruler, Sparkles, UtensilsCrossed, X,
   Sun, Moon, ChevronRight, FileText, CreditCard, Building2, LayoutGrid
 } from 'lucide-react';
@@ -74,7 +74,7 @@ const PLANS: Record<string, Plan> = {
 };
 
 const EVENTS = [
-  { id: 'wedding', title: 'Weddings', desc: 'Grand stages & floral drapes', icon: <Heart className="w-5 h-5" />, emoji: '💍', needsStageCustomization: true },
+  { id: 'wedding', title: 'Weddings', desc: 'Grand stages & floral drapes', icon: <Users className="w-5 h-5" />, emoji: '💍', needsStageCustomization: true },
   { id: 'birthday', title: 'Birthdays', desc: 'Balloons & intimate lighting', icon: <Cake className="w-5 h-5" />, emoji: '🎂', needsStageCustomization: true },
   { id: 'baby', title: 'Baby Shower', desc: 'Soft pastels & central seating', icon: <Baby className="w-5 h-5" />, emoji: '🍼', needsStageCustomization: true },
   { id: 'housewarming', title: 'Housewarming', desc: 'Floral hangings & entrance', icon: <Home className="w-5 h-5" />, emoji: '🏡', needsStageCustomization: false },
