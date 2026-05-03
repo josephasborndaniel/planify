@@ -98,10 +98,21 @@ export function PlateArchitect() {
     doc.setTextColor(200, 230, 255);
     doc.text(`Quote No: ${quoteNo}`, pageW - 14, 22, { align: 'right' });
     doc.text(`Date: ${date}`, pageW - 14, 27, { align: 'right' });
-    doc.text(`Guests: ${guestCount.toLocaleString('en-IN')}`, pageW - 14, 32, { align: 'right' });
+    doc.text(`Quote No: ${quoteNo}`, pageW - 14, 32, { align: 'right' });
+
+    // ── Guest count highlight banner ──
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(14, 46, pageW - 28, 14, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(42, 125, 212);
+    doc.text('👥  EVENT CATERING FOR:', 18, 55);
+    doc.setFontSize(11);
+    doc.setTextColor(20, 80, 160);
+    doc.text(`${guestCount.toLocaleString('en-IN')} PERSONS`, pageW - 18, 55, { align: 'right' });
 
     // ── Section: Prepared by ──
-    let y = 52;
+    let y = 66;
     doc.setFillColor(240, 247, 255);
     doc.roundedRect(14, y, pageW - 28, 22, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
@@ -127,13 +138,19 @@ export function PlateArchitect() {
       i + 1,
       item.category,
       item.name,
-      item.quantity,
+      `${item.quantity} serving${item.quantity > 1 ? 's' : ''}`,
       `Rs.${item.pricePerPlate}`,
       `Rs.${(item.pricePerPlate * item.quantity * guestCount).toLocaleString('en-IN')}`,
     ]);
 
+    // Note below table header
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(7);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`* Totals calculated for ${guestCount.toLocaleString('en-IN')} persons. Rate/Plate × Qty/Plate × No. of Persons = Total.`, 14, y + 3);
+
     autoTable(doc, {
-      startY: y + 4,
+      startY: y + 10,
       head: [['#', 'Category', 'Item', 'Qty/Plate', 'Rate/Plate', 'Total']],
       body: tableRows,
       theme: 'grid',
@@ -170,26 +187,27 @@ export function PlateArchitect() {
     doc.text('SUMMARY', summaryX + 5, afterTable + 7);
 
     const summaryLines = [
-      [`Guests:`, `${guestCount.toLocaleString('en-IN')}`],
+      [`No. of Persons:`, `${guestCount.toLocaleString('en-IN')}`],
       [`Rate / Plate:`, `Rs.${pricePerPlate}`],
+      [`Subtotal:`, `Rs.${totalCost.toLocaleString('en-IN')}`],
       [`GST (18%):`, `Rs.${Math.round(totalCost * 0.18).toLocaleString('en-IN')}`],
     ];
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(220, 240, 255);
     summaryLines.forEach(([label, val], i) => {
-      doc.text(label, summaryX + 5, afterTable + 14 + i * 7);
-      doc.text(val, summaryX + 67, afterTable + 14 + i * 7, { align: 'right' });
+      doc.text(label, summaryX + 5, afterTable + 14 + i * 6);
+      doc.text(val, summaryX + 67, afterTable + 14 + i * 6, { align: 'right' });
     });
 
     doc.setLineWidth(0.3);
     doc.setDrawColor(255, 255, 255);
-    doc.line(summaryX + 5, afterTable + 33, summaryX + 67, afterTable + 33);
+    doc.line(summaryX + 5, afterTable + 38, summaryX + 67, afterTable + 38);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text('GRAND TOTAL:', summaryX + 5, afterTable + 40);
-    doc.text(`Rs.${Math.round(totalCost * 1.18).toLocaleString('en-IN')}`, summaryX + 67, afterTable + 40, { align: 'right' });
+    doc.text('GRAND TOTAL:', summaryX + 5, afterTable + 45);
+    doc.text(`Rs.${Math.round(totalCost * 1.18).toLocaleString('en-IN')}`, summaryX + 67, afterTable + 45, { align: 'right' });
 
     // ── Terms ──
     const termsY = afterTable + 52;
@@ -219,21 +237,39 @@ export function PlateArchitect() {
     doc.text(`© ${new Date().getFullYear()} Planify Event Management. All rights reserved.`, pageW / 2, footerY + 3, { align: 'center' });
     doc.text('This is a computer-generated quotation and is valid without a signature.', pageW / 2, footerY + 8, { align: 'center' });
 
-    // ── Save & WhatsApp ──
+    // ── Share PDF as actual file via Web Share API, fallback to WhatsApp text ──
     const fileName = `Planify_Catering_Quote_${quoteNo}.pdf`;
-    doc.save(fileName);
+    const pdfBlob = doc.output('blob');
+    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
 
-    const waText = `Hi! I just received a catering quotation from *Planify* 🍽️
+    const waText = `🍽️ *Planify Catering Quotation*
 
 *Quote No:* ${quoteNo}
 *Date:* ${date}
-*Guests:* ${guestCount.toLocaleString('en-IN')}
+*No. of Persons:* ${guestCount.toLocaleString('en-IN')}
 *Total Items:* ${allSelected.length}
 *Rate/Plate:* ₹${pricePerPlate}
-*Grand Total (incl. GST):* ₹${Math.round(totalCost * 1.18).toLocaleString('en-IN')}
+*Subtotal:* ₹${totalCost.toLocaleString('en-IN')}
+*GST (18%):* ₹${Math.round(totalCost * 0.18).toLocaleString('en-IN')}
+*Grand Total:* ₹${Math.round(totalCost * 1.18).toLocaleString('en-IN')}
 
-The detailed PDF quotation has been downloaded as *${fileName}*. Please find it attached.`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`, '_blank');
+_Detailed PDF attached. Authorised by Planify Event Management._`;
+
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      // Mobile: share the actual PDF file
+      navigator.share({
+        title: `Planify Catering Quotation - ${quoteNo}`,
+        text: waText,
+        files: [pdfFile],
+      }).catch(() => {
+        // User cancelled or error, still download
+        doc.save(fileName);
+      });
+    } else {
+      // Desktop: download PDF and open WhatsApp with text
+      doc.save(fileName);
+      window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`, '_blank');
+    }
   };
 
   return (
