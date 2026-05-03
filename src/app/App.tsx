@@ -31,45 +31,151 @@ interface Plan {
   designs: Design[];
 }
 
-const PLANS: Record<string, Plan> = {
-  budget: {
-    id: 'budget',
-    name: 'Budget',
-    price: 5000,
-    coverImage: 'https://images.unsplash.com/photo-1519167758993-87dde89c1cc3?w=400&h=300&fit=crop',
-    description: 'Basic event setup with essential elements and standard services.',
-    features: ['Basic decoration', 'Standard setup', 'Single light scheme', 'Basic catering'],
-    designs: [
-      { id: 'budget-1', image: 'https://images.unsplash.com/photo-1519167758993-87dde89c1cc3?w=600&h=400&fit=crop', title: 'Classic Simple', description: 'Clean and minimal design with essential setup' },
-      { id: 'budget-2', image: 'https://images.unsplash.com/photo-1540575467063-178f50002c4b?w=600&h=400&fit=crop', title: 'Elegant Basic', description: 'Elegant yet affordable design concept' },
-      { id: 'budget-3', image: 'https://images.unsplash.com/photo-1519671482677-11fbb989edba?w=600&h=400&fit=crop', title: 'Modern Minimal', description: 'Contemporary minimal design approach' }
-    ]
+const EVENT_PLANS: Record<string, Record<string, Plan>> = {
+  wedding: {
+    budget: {
+      id: 'budget',
+      name: 'Budget',
+      price: 50000,
+      coverImage: '/wedding-cover-simple1.jpg',
+      description: 'Basic wedding setup with essential elements and standard services.',
+      features: ['Basic decoration', 'Standard setup', 'Single light scheme', 'Basic catering'],
+      designs: [
+        { id: 'wed-budget-1', image: '/wedding-cover-simple1.jpg', title: 'Classic Simple', description: 'Clean and minimal design with essential setup' },
+        { id: 'wed-budget-2', image: '/wedding-cover-simple2.png', title: 'Elegant Basic', description: 'Elegant yet affordable design concept' },
+        { id: 'wed-budget-3', image: '/wedding-cover-simple3.png', title: 'Modern Minimal', description: 'Contemporary minimal design approach' }
+      ]
+    },
+    standard: {
+      id: 'standard',
+      name: 'Standard',
+      price: 120000,
+      coverImage: '/wedding-cover-strandard1.png',
+      description: 'Complete wedding package with premium elements and enhanced services.',
+      features: ['Premium decoration', 'Advanced setup', 'Multi-light setup', 'Premium catering'],
+      designs: [
+        { id: 'wed-standard-1', image: '/wedding-cover-strandard1.png', title: 'Premium Elegant', description: 'Sophisticated design with premium elements' },
+        { id: 'wed-standard-2', image: '/wedding-cover-strandard2.png', title: 'Modern Chic', description: 'Contemporary chic aesthetic' },
+        { id: 'wed-standard-3', image: '/wedding-cover-strandard3.png', title: 'Luxury Standard', description: 'Luxurious yet accessible design' }
+      ]
+    },
+    premium: {
+      id: 'premium',
+      name: 'Premium',
+      price: 250000,
+      coverImage: '/wedding-cover-premium1.png',
+      description: 'Luxury wedding experience with exclusive elements and VIP services.',
+      features: ['Luxury decoration', 'Full customization', 'Advanced lighting design', 'Gourmet catering'],
+      designs: [
+        { id: 'wed-premium-1', image: '/wedding-cover-premium1.png', title: 'Grand Luxury', description: 'Grand and luxurious event experience' },
+        { id: 'wed-premium-2', image: '/wedding-cover-premium2.png', title: 'Opulent Elegance', description: 'Opulent and elegant celebration' },
+        { id: 'wed-premium-3', image: '/wedding-cover-premium3.png', title: 'Exclusive VIP', description: 'Exclusive VIP luxury experience' }
+      ]
+    }
   },
-  standard: {
-    id: 'standard',
-    name: 'Standard',
-    price: 12000,
-    coverImage: 'https://images.unsplash.com/photo-1519671482677-11fbb989edba?w=400&h=300&fit=crop',
-    description: 'Complete event package with premium elements and enhanced services.',
-    features: ['Premium decoration', 'Advanced setup', 'Multi-light setup', 'Premium catering'],
-    designs: [
-      { id: 'standard-1', image: 'https://images.unsplash.com/photo-1519671482677-11fbb989edba?w=600&h=400&fit=crop', title: 'Premium Elegant', description: 'Sophisticated design with premium elements' },
-      { id: 'standard-2', image: 'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=600&h=400&fit=crop', title: 'Modern Chic', description: 'Contemporary chic aesthetic' },
-      { id: 'standard-3', image: 'https://images.unsplash.com/photo-1519224283042-481453be6f32?w=600&h=400&fit=crop', title: 'Luxury Standard', description: 'Luxurious yet accessible design' }
-    ]
+  birthday: {
+    budget: {
+      id: 'budget',
+      name: 'Budget',
+      price: 5000,
+      coverImage: 'https://images.unsplash.com/photo-1530103862676-de3c9de59a9e?w=400&h=300&fit=crop',
+      description: 'Fun and essential setup for a memorable birthday.',
+      features: ['Balloon arch', 'Table decor', 'Basic lighting', 'Simple cake stand'],
+      designs: [
+        { id: 'bday-budget-1', image: 'https://images.unsplash.com/photo-1530103862676-de3c9de59a9e?w=600&h=400&fit=crop', title: 'Classic Party', description: 'Bright and fun classic birthday' }
+      ]
+    },
+    standard: {
+      id: 'standard',
+      name: 'Standard',
+      price: 15000,
+      coverImage: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=400&h=300&fit=crop',
+      description: 'Enhanced birthday experience with themed decor.',
+      features: ['Themed decoration', 'Backdrop setup', 'LED lighting', 'Premium dessert table'],
+      designs: [
+        { id: 'bday-standard-1', image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=400&fit=crop', title: 'Themed Delight', description: 'Immersive themed birthday' }
+      ]
+    },
+    premium: {
+      id: 'premium',
+      name: 'Premium',
+      price: 35000,
+      coverImage: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop',
+      description: 'Ultimate VIP birthday bash with grand scale elements.',
+      features: ['Grand themed decor', 'Stage & dance floor', 'Custom light show', 'Full gourmet catering'],
+      designs: [
+        { id: 'bday-premium-1', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&h=400&fit=crop', title: 'Grand Bash', description: 'Over-the-top VIP celebration' }
+      ]
+    }
   },
-  premium: {
-    id: 'premium',
-    name: 'Premium',
-    price: 25000,
-    coverImage: 'https://images.unsplash.com/photo-1519224283042-481453be6f32?w=400&h=300&fit=crop',
-    description: 'Luxury event experience with exclusive elements and VIP services.',
-    features: ['Luxury decoration', 'Full customization', 'Advanced lighting design', 'Gourmet catering'],
-    designs: [
-      { id: 'premium-1', image: 'https://images.unsplash.com/photo-1519224283042-481453be6f32?w=600&h=400&fit=crop', title: 'Grand Luxury', description: 'Grand and luxurious event experience' },
-      { id: 'premium-2', image: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600&h=400&fit=crop', title: 'Opulent Elegance', description: 'Opulent and elegant celebration' },
-      { id: 'premium-3', image: 'https://images.unsplash.com/photo-1540575467063-178f50002c4b?w=600&h=400&fit=crop', title: 'Exclusive VIP', description: 'Exclusive VIP luxury experience' }
-    ]
+  baby: {
+    budget: {
+      id: 'budget', name: 'Budget', price: 8000,
+      coverImage: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=300&fit=crop',
+      description: 'Soft and simple baby shower essentials.',
+      features: ['Pastel decor', 'Seating setup', 'Basic treats'],
+      designs: [{ id: 'baby-b1', image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=400&fit=crop', title: 'Soft Pastels', description: 'Gentle pastel theme' }]
+    },
+    standard: {
+      id: 'standard', name: 'Standard', price: 18000,
+      coverImage: 'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?w=400&h=300&fit=crop',
+      description: 'Beautifully crafted shower with custom themes.',
+      features: ['Custom backdrop', 'Themed desserts', 'Floral elements'],
+      designs: [{ id: 'baby-s1', image: 'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?w=600&h=400&fit=crop', title: 'Themed Joy', description: 'Cohesive custom theme' }]
+    },
+    premium: {
+      id: 'premium', name: 'Premium', price: 30000,
+      coverImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
+      description: 'Luxurious baby shower with premium installations.',
+      features: ['Grand floral arch', 'Premium seating', 'Gourmet spread'],
+      designs: [{ id: 'baby-p1', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=400&fit=crop', title: 'Luxury Arrival', description: 'High-end lavish shower' }]
+    }
+  },
+  housewarming: {
+    budget: {
+      id: 'budget', name: 'Budget', price: 10000,
+      coverImage: 'https://images.unsplash.com/photo-1520699049698-acd2fce18836?w=400&h=300&fit=crop',
+      description: 'Welcoming setup with basic floral decor.',
+      features: ['Entrance floral', 'Basic lighting', 'Simple seating'],
+      designs: [{ id: 'hw-b1', image: 'https://images.unsplash.com/photo-1520699049698-acd2fce18836?w=600&h=400&fit=crop', title: 'Warm Welcome', description: 'Simple and inviting' }]
+    },
+    standard: {
+      id: 'standard', name: 'Standard', price: 20000,
+      coverImage: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400&h=300&fit=crop',
+      description: 'Elegant housewarming with full home decor touches.',
+      features: ['Full floral garlands', 'Ambient lighting', 'Catering setup'],
+      designs: [{ id: 'hw-s1', image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600&h=400&fit=crop', title: 'Elegant Entry', description: 'Sophisticated home styling' }]
+    },
+    premium: {
+      id: 'premium', name: 'Premium', price: 40000,
+      coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop',
+      description: 'Extravagant home celebration with premium decor.',
+      features: ['Grand entrance', 'Custom lighting design', 'Live music space'],
+      designs: [{ id: 'hw-p1', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop', title: 'Grand Estate', description: 'Luxury home presentation' }]
+    }
+  },
+  memorial: {
+    budget: {
+      id: 'budget', name: 'Budget', price: 4000,
+      coverImage: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=400&h=300&fit=crop',
+      description: 'Respectful and simple arrangement.',
+      features: ['White drapes', 'Basic floral stands', 'Simple seating'],
+      designs: [{ id: 'mem-b1', image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=600&h=400&fit=crop', title: 'Simple Tribute', description: 'Quiet and respectful' }]
+    },
+    standard: {
+      id: 'standard', name: 'Standard', price: 8000,
+      coverImage: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=400&h=300&fit=crop',
+      description: 'Elegant memorial with beautiful floral tributes.',
+      features: ['Full white drapes', 'Premium floral wreaths', 'Audio setup'],
+      designs: [{ id: 'mem-s1', image: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=600&h=400&fit=crop', title: 'Elegant Farewell', description: 'Beautiful floral setup' }]
+    },
+    premium: {
+      id: 'premium', name: 'Premium', price: 15000,
+      coverImage: 'https://images.unsplash.com/photo-1542159670-352077e627eb?w=400&h=300&fit=crop',
+      description: 'Premium tribute with comprehensive arrangements.',
+      features: ['Extensive floral design', 'Ambient lighting', 'Catering service'],
+      designs: [{ id: 'mem-p1', image: 'https://images.unsplash.com/photo-1542159670-352077e627eb?w=600&h=400&fit=crop', title: 'Honored Memory', description: 'Comprehensive and grand' }]
+    }
   }
 };
 
@@ -177,7 +283,7 @@ export default function App() {
 
           {/* Image Carousel */}
           <div className="relative w-full aspect-video overflow-hidden">
-            <img loading="lazy" src={currentDesign.image} alt={currentDesign.title} className="w-full h-full object-cover" />
+            <img loading="lazy" src={currentDesign.image} alt={currentDesign.title} className="w-full h-full object-cover object-center" />
             <div className="absolute inset-0 flex items-center justify-between px-3">
               <button onClick={handlePrevDesign} className="w-9 h-9 bg-black/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center active:scale-90 transition-all">
                 <ArrowLeft className="w-4 h-4" />
@@ -413,16 +519,17 @@ export default function App() {
                 <div className="flex gap-3 plan-marquee">
                   {/* Render twice for seamless infinite loop */}
                   {[...PLAN_TIERS, ...PLAN_TIERS].map((tier, idx) => {
-                    const plan = PLANS[tier.id];
+                    const currentEventPlans = (selectedEvent && EVENT_PLANS[selectedEvent]) ? EVENT_PLANS[selectedEvent] : EVENT_PLANS['wedding'];
+                    const plan = currentEventPlans[tier.id];
                     return (
                       <button
                         key={`${tier.id}-${idx}`}
                         onClick={() => setSelectedPlan(plan)}
-                        className="min-w-[145px] flex-shrink-0 rounded-2xl overflow-hidden text-left transition-all active:scale-95 shadow-sm"
+                        className="w-[145px] flex-shrink-0 rounded-2xl overflow-hidden text-left transition-all active:scale-95 shadow-sm"
                         style={{ border: `1px solid ${border}`, background: card }}
                       >
                         <div className="aspect-[4/3] relative overflow-hidden">
-                          <img loading="lazy" src={plan.coverImage} alt={plan.name} className="w-full h-full object-cover" />
+                          <img loading="lazy" src={plan.coverImage} alt={plan.name} className="w-full h-full object-cover object-center" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                           <span className="absolute bottom-2 left-2 text-[10px] font-black text-white uppercase tracking-wide bg-black/30 backdrop-blur-sm px-2 py-0.5 rounded-full">
                             {tier.badge}
