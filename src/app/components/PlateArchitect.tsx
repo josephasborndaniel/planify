@@ -113,9 +113,11 @@ export function PlateArchitect() {
               {/* Plate */}
               <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex-shrink-0">
                 <img loading="lazy" src={plateImg} alt="Plate" className="w-full h-full object-contain drop-shadow-xl" />
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0">
                   {selectedItems.length === 0 && (
-                    <p className="text-[10px] text-center italic px-4" style={{ color: textMuted }}>Select dishes to populate</p>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <p className="text-[10px] text-center italic px-4" style={{ color: textMuted }}>Select dishes to<br/>populate</p>
+                    </div>
                   )}
                   <div className="relative w-full h-full">
                     {selectedItems.map((item, index) => {
