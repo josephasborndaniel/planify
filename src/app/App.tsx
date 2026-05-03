@@ -5,7 +5,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import { DesignStudio } from './components/DesignStudio';
 import { PlateArchitect } from './components/PlateArchitect';
 import { QuoteGenerator } from '../components/QuoteGenerator';
-import { PaymentTracker } from '../components/PaymentTracker';
+// import { PaymentTracker } from '../components/PaymentTracker'; // TODO: integrate later
 import { VendorProfilePage } from '../components/VendorProfile';
 import { useTheme } from './context/ThemeContext';
 import {
@@ -221,7 +221,7 @@ function ThemeToggle() {
 
 export default function App() {
   const { isDark } = useTheme();
-  const [activeScreen, setActiveScreen] = useState<'home' | 'studio' | 'catering' | 'quotes' | 'payments' | 'profile'>('home');
+  const [activeScreen, setActiveScreen] = useState<'home' | 'studio' | 'catering' | 'quotes' | /* 'payments' | */ 'profile'>('home');
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [activePackage, setActivePackage] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -394,15 +394,15 @@ export default function App() {
     );
   }
 
-  // ── PAYMENT TRACKER VIEW ───────────────────────────────────────────────────────
-  if (activeScreen === 'payments') {
-    return (
-      <>
-        <PaymentTracker />
-        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
-      </>
-    );
-  }
+  // ── PAYMENT TRACKER VIEW (commented out — integrate later) ────────────────────
+  // if (activeScreen === 'payments') {
+  //   return (
+  //     <>
+  //       <PaymentTracker />
+  //       <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
+  //     </>
+  //   );
+  // }
 
   // ── VENDOR PROFILE VIEW ────────────────────────────────────────────────────────
   if (activeScreen === 'profile') {
@@ -603,7 +603,7 @@ export default function App() {
 }
 
 // ── Bottom Navigation Bar ─────────────────────────────────────────────────────
-type Screen = 'home' | 'studio' | 'catering' | 'quotes' | 'payments' | 'profile';
+type Screen = 'home' | 'studio' | 'catering' | 'quotes' | /* 'payments' | */ 'profile';
 
 function BottomNav({ active, onNav, isDark, border, card, text, purple }: {
   active: Screen;
@@ -613,7 +613,7 @@ function BottomNav({ active, onNav, isDark, border, card, text, purple }: {
   const items = [
     { id: 'home' as Screen,     label: 'Home',    icon: <LayoutGrid className="w-5 h-5" /> },
     { id: 'quotes' as Screen,   label: 'Quotes',  icon: <FileText className="w-5 h-5" /> },
-    { id: 'payments' as Screen, label: 'Pay',     icon: <CreditCard className="w-5 h-5" /> },
+    // { id: 'payments' as Screen, label: 'Pay', icon: <CreditCard className="w-5 h-5" /> }, // TODO: integrate later
     { id: 'profile' as Screen,  label: 'Vendor',  icon: <Building2 className="w-5 h-5" /> },
   ];
 
