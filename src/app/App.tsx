@@ -78,103 +78,103 @@ const EVENT_PLANS: Record<string, Record<string, Plan>> = {
       id: 'budget',
       name: 'Budget',
       price: 5000,
-      coverImage: 'https://images.unsplash.com/photo-1530103862676-de3c9de59a9e?w=400&h=300&fit=crop',
+      coverImage: '/bday-budget.png',
       description: 'Fun and essential setup for a memorable birthday.',
       features: ['Balloon arch', 'Table decor', 'Basic lighting', 'Simple cake stand'],
       designs: [
-        { id: 'bday-budget-1', image: 'https://images.unsplash.com/photo-1530103862676-de3c9de59a9e?w=600&h=400&fit=crop', title: 'Classic Party', description: 'Bright and fun classic birthday' }
+        { id: 'bday-budget-1', image: '/bday-budget.png', title: 'Classic Party', description: 'Bright and fun classic birthday' }
       ]
     },
     standard: {
       id: 'standard',
       name: 'Standard',
       price: 15000,
-      coverImage: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=400&h=300&fit=crop',
+      coverImage: '/bday-standard.png',
       description: 'Enhanced birthday experience with themed decor.',
       features: ['Themed decoration', 'Backdrop setup', 'LED lighting', 'Premium dessert table'],
       designs: [
-        { id: 'bday-standard-1', image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=400&fit=crop', title: 'Themed Delight', description: 'Immersive themed birthday' }
+        { id: 'bday-standard-1', image: '/bday-standard.png', title: 'Themed Delight', description: 'Immersive themed birthday' }
       ]
     },
     premium: {
       id: 'premium',
       name: 'Premium',
       price: 35000,
-      coverImage: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop',
+      coverImage: '/bday-premium.png',
       description: 'Ultimate VIP birthday bash with grand scale elements.',
       features: ['Grand themed decor', 'Stage & dance floor', 'Custom light show', 'Full gourmet catering'],
       designs: [
-        { id: 'bday-premium-1', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&h=400&fit=crop', title: 'Grand Bash', description: 'Over-the-top VIP celebration' }
+        { id: 'bday-premium-1', image: '/bday-premium.png', title: 'Grand Bash', description: 'Over-the-top VIP celebration' }
       ]
     }
   },
   baby: {
     budget: {
       id: 'budget', name: 'Budget', price: 8000,
-      coverImage: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=300&fit=crop',
+      coverImage: '/baby-budget.png',
       description: 'Soft and simple baby shower essentials.',
       features: ['Pastel decor', 'Seating setup', 'Basic treats'],
-      designs: [{ id: 'baby-b1', image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=400&fit=crop', title: 'Soft Pastels', description: 'Gentle pastel theme' }]
+      designs: [{ id: 'baby-b1', image: '/baby-budget.png', title: 'Soft Pastels', description: 'Gentle pastel theme' }]
     },
     standard: {
       id: 'standard', name: 'Standard', price: 18000,
-      coverImage: 'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?w=400&h=300&fit=crop',
+      coverImage: '/baby-standard.png',
       description: 'Beautifully crafted shower with custom themes.',
       features: ['Custom backdrop', 'Themed desserts', 'Floral elements'],
-      designs: [{ id: 'baby-s1', image: 'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?w=600&h=400&fit=crop', title: 'Themed Joy', description: 'Cohesive custom theme' }]
+      designs: [{ id: 'baby-s1', image: '/baby-standard.png', title: 'Themed Joy', description: 'Cohesive custom theme' }]
     },
     premium: {
       id: 'premium', name: 'Premium', price: 30000,
-      coverImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
+      coverImage: '/baby-premium.png',
       description: 'Luxurious baby shower with premium installations.',
       features: ['Grand floral arch', 'Premium seating', 'Gourmet spread'],
-      designs: [{ id: 'baby-p1', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=400&fit=crop', title: 'Luxury Arrival', description: 'High-end lavish shower' }]
+      designs: [{ id: 'baby-p1', image: '/baby-premium.png', title: 'Luxury Arrival', description: 'High-end lavish shower' }]
     }
   },
   housewarming: {
     budget: {
       id: 'budget', name: 'Budget', price: 10000,
-      coverImage: 'https://images.unsplash.com/photo-1520699049698-acd2fce18836?w=400&h=300&fit=crop',
+      coverImage: '/hw-budget.png',
       description: 'Welcoming setup with basic floral decor.',
       features: ['Entrance floral', 'Basic lighting', 'Simple seating'],
-      designs: [{ id: 'hw-b1', image: 'https://images.unsplash.com/photo-1520699049698-acd2fce18836?w=600&h=400&fit=crop', title: 'Warm Welcome', description: 'Simple and inviting' }]
+      designs: [{ id: 'hw-b1', image: '/hw-budget.png', title: 'Warm Welcome', description: 'Simple and inviting' }]
     },
     standard: {
       id: 'standard', name: 'Standard', price: 20000,
-      coverImage: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400&h=300&fit=crop',
+      coverImage: '/hw-standard.png',
       description: 'Elegant housewarming with full home decor touches.',
       features: ['Full floral garlands', 'Ambient lighting', 'Catering setup'],
-      designs: [{ id: 'hw-s1', image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600&h=400&fit=crop', title: 'Elegant Entry', description: 'Sophisticated home styling' }]
+      designs: [{ id: 'hw-s1', image: '/hw-standard.png', title: 'Elegant Entry', description: 'Sophisticated home styling' }]
     },
     premium: {
       id: 'premium', name: 'Premium', price: 40000,
-      coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop',
+      coverImage: '/hw-premium.png',
       description: 'Extravagant home celebration with premium decor.',
       features: ['Grand entrance', 'Custom lighting design', 'Live music space'],
-      designs: [{ id: 'hw-p1', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop', title: 'Grand Estate', description: 'Luxury home presentation' }]
+      designs: [{ id: 'hw-p1', image: '/hw-premium.png', title: 'Grand Estate', description: 'Luxury home presentation' }]
     }
   },
   memorial: {
     budget: {
       id: 'budget', name: 'Budget', price: 4000,
-      coverImage: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=400&h=300&fit=crop',
+      coverImage: '/mem-budget.png',
       description: 'Respectful and simple arrangement.',
       features: ['White drapes', 'Basic floral stands', 'Simple seating'],
-      designs: [{ id: 'mem-b1', image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=600&h=400&fit=crop', title: 'Simple Tribute', description: 'Quiet and respectful' }]
+      designs: [{ id: 'mem-b1', image: '/mem-budget.png', title: 'Simple Tribute', description: 'Quiet and respectful' }]
     },
     standard: {
       id: 'standard', name: 'Standard', price: 8000,
-      coverImage: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=400&h=300&fit=crop',
+      coverImage: '/mem-standard.png',
       description: 'Elegant memorial with beautiful floral tributes.',
       features: ['Full white drapes', 'Premium floral wreaths', 'Audio setup'],
-      designs: [{ id: 'mem-s1', image: 'https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=600&h=400&fit=crop', title: 'Elegant Farewell', description: 'Beautiful floral setup' }]
+      designs: [{ id: 'mem-s1', image: '/mem-standard.png', title: 'Elegant Farewell', description: 'Beautiful floral setup' }]
     },
     premium: {
       id: 'premium', name: 'Premium', price: 15000,
-      coverImage: 'https://images.unsplash.com/photo-1542159670-352077e627eb?w=400&h=300&fit=crop',
+      coverImage: '/mem-premium.png',
       description: 'Premium tribute with comprehensive arrangements.',
       features: ['Extensive floral design', 'Ambient lighting', 'Catering service'],
-      designs: [{ id: 'mem-p1', image: 'https://images.unsplash.com/photo-1542159670-352077e627eb?w=600&h=400&fit=crop', title: 'Honored Memory', description: 'Comprehensive and grand' }]
+      designs: [{ id: 'mem-p1', image: '/mem-premium.png', title: 'Honored Memory', description: 'Comprehensive and grand' }]
     }
   }
 };
