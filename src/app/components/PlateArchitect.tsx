@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Minus, Plus, Download, Users, Utensils, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { Minus, Plus, Download, Users, Utensils, Info, ChevronDown, ChevronUp, Share2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import plateImg from './plate.png';
 import waterImg from './water.png';
 import birImg from './biriyani.png';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface MenuItem {
   id: string;
@@ -54,6 +56,185 @@ export function PlateArchitect() {
   const pricePerPlate = items.reduce((sum, item) => sum + (item.pricePerPlate * item.quantity), 0);
   const totalCost = pricePerPlate * guestCount;
   const totalSelected = selectedItems.length + selectedDrinks.length;
+  const allSelected = items.filter(i => i.quantity > 0);
+
+  const generateAndSharePDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const date = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+    const quoteNo = `PLF-${Date.now().toString().slice(-6)}`;
+
+    // ── Background header band ──
+    doc.setFillColor(42, 125, 212);
+    doc.rect(0, 0, pageW, 42, 'F');
+
+    // White accent stripe
+    doc.setFillColor(255, 255, 255, 0.15);
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(0.4);
+    doc.line(0, 42, pageW, 42);
+
+    // Brand name
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(255, 255, 255);
+    doc.text('PLANIFY', 14, 18);
+
+    // Tagline
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(200, 230, 255);
+    doc.text('Professional Event Planning', 14, 24);
+
+    // Document title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(255, 255, 255);
+    doc.text('FOOD & CATERING QUOTATION', pageW - 14, 16, { align: 'right' });
+
+    // Quote meta
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(200, 230, 255);
+    doc.text(`Quote No: ${quoteNo}`, pageW - 14, 22, { align: 'right' });
+    doc.text(`Date: ${date}`, pageW - 14, 27, { align: 'right' });
+    doc.text(`Guests: ${guestCount.toLocaleString('en-IN')}`, pageW - 14, 32, { align: 'right' });
+
+    // ── Section: Prepared by ──
+    let y = 52;
+    doc.setFillColor(240, 247, 255);
+    doc.roundedRect(14, y, pageW - 28, 22, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(42, 125, 212);
+    doc.text('PREPARED BY', 18, y + 6);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 30, 30);
+    doc.text('Planify Event Management', 18, y + 12);
+    doc.text('contact@planify.in  |  +91 98765 43210  |  www.planify.in', 18, y + 17);
+
+    // ── Items table ──
+    y += 28;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(42, 125, 212);
+    doc.text('CATERING ITEMS', 14, y);
+    doc.setDrawColor(42, 125, 212);
+    doc.setLineWidth(0.5);
+    doc.line(14, y + 1, 14 + 42, y + 1);
+
+    const tableRows = allSelected.map((item, i) => [
+      i + 1,
+      item.category,
+      item.name,
+      item.quantity,
+      `Rs.${item.pricePerPlate}`,
+      `Rs.${(item.pricePerPlate * item.quantity * guestCount).toLocaleString('en-IN')}`,
+    ]);
+
+    autoTable(doc, {
+      startY: y + 4,
+      head: [['#', 'Category', 'Item', 'Qty/Plate', 'Rate/Plate', 'Total']],
+      body: tableRows,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [42, 125, 212],
+        textColor: 255,
+        fontStyle: 'bold',
+        fontSize: 8,
+        halign: 'center',
+      },
+      bodyStyles: { fontSize: 8, textColor: [30, 30, 30], halign: 'center' },
+      columnStyles: {
+        0: { cellWidth: 8 },
+        1: { cellWidth: 28 },
+        2: { halign: 'left', cellWidth: 55 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 22 },
+        5: { cellWidth: 28 },
+      },
+      alternateRowStyles: { fillColor: [240, 247, 255] },
+      margin: { left: 14, right: 14 },
+    });
+
+    // ── Summary box ──
+    const afterTable = (doc as any).lastAutoTable.finalY + 8;
+    const summaryX = pageW - 14 - 72;
+
+    doc.setFillColor(42, 125, 212);
+    doc.roundedRect(summaryX, afterTable, 72, 42, 3, 3, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(200, 230, 255);
+    doc.text('SUMMARY', summaryX + 5, afterTable + 7);
+
+    const summaryLines = [
+      [`Guests:`, `${guestCount.toLocaleString('en-IN')}`],
+      [`Rate / Plate:`, `Rs.${pricePerPlate}`],
+      [`GST (18%):`, `Rs.${Math.round(totalCost * 0.18).toLocaleString('en-IN')}`],
+    ];
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(220, 240, 255);
+    summaryLines.forEach(([label, val], i) => {
+      doc.text(label, summaryX + 5, afterTable + 14 + i * 7);
+      doc.text(val, summaryX + 67, afterTable + 14 + i * 7, { align: 'right' });
+    });
+
+    doc.setLineWidth(0.3);
+    doc.setDrawColor(255, 255, 255);
+    doc.line(summaryX + 5, afterTable + 33, summaryX + 67, afterTable + 33);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text('GRAND TOTAL:', summaryX + 5, afterTable + 40);
+    doc.text(`Rs.${Math.round(totalCost * 1.18).toLocaleString('en-IN')}`, summaryX + 67, afterTable + 40, { align: 'right' });
+
+    // ── Terms ──
+    const termsY = afterTable + 52;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(42, 125, 212);
+    doc.text('TERMS & CONDITIONS', 14, termsY);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(100, 100, 100);
+    const terms = [
+      '1. This quotation is valid for 15 days from the date of issue.',
+      '2. 50% advance payment required to confirm the booking.',
+      '3. GST @18% applicable on all services.',
+      '4. Prices may vary based on seasonal availability of ingredients.',
+      '5. Cancellations within 7 days of the event are non-refundable.',
+    ];
+    terms.forEach((t, i) => doc.text(t, 14, termsY + 6 + i * 5));
+
+    // ── Footer ──
+    const footerY = doc.internal.pageSize.getHeight() - 12;
+    doc.setFillColor(42, 125, 212);
+    doc.rect(0, footerY - 4, pageW, 20, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(200, 230, 255);
+    doc.text(`© ${new Date().getFullYear()} Planify Event Management. All rights reserved.`, pageW / 2, footerY + 3, { align: 'center' });
+    doc.text('This is a computer-generated quotation and is valid without a signature.', pageW / 2, footerY + 8, { align: 'center' });
+
+    // ── Save & WhatsApp ──
+    const fileName = `Planify_Catering_Quote_${quoteNo}.pdf`;
+    doc.save(fileName);
+
+    const waText = `Hi! I just received a catering quotation from *Planify* 🍽️
+
+*Quote No:* ${quoteNo}
+*Date:* ${date}
+*Guests:* ${guestCount.toLocaleString('en-IN')}
+*Total Items:* ${allSelected.length}
+*Rate/Plate:* ₹${pricePerPlate}
+*Grand Total (incl. GST):* ₹${Math.round(totalCost * 1.18).toLocaleString('en-IN')}
+
+The detailed PDF quotation has been downloaded as *${fileName}*. Please find it attached.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`, '_blank');
+  };
 
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: bg, color: text }}>
@@ -259,11 +440,14 @@ export function PlateArchitect() {
         }}
       >
         <button
-          className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-lg"
+          onClick={generateAndSharePDF}
+          disabled={allSelected.length === 0}
+          className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-lg disabled:opacity-40"
           style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
         >
           <Download className="w-4 h-4" />
-          Export PDF Quotation
+          Export PDF & Share on WhatsApp
+          <Share2 className="w-4 h-4" />
         </button>
         <p className="mt-2 text-center flex items-center justify-center gap-1 text-[10px]" style={{ color: textMuted }}>
           <Info className="w-3 h-3" /> Taxes & service charges applied at checkout
