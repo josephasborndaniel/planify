@@ -324,7 +324,11 @@ export default function App() {
 
             <div className="flex flex-col gap-2 pt-1">
               <button
-                onClick={() => { setSelectedDesign(currentDesign); setSelectedPlan(null); setActivePackage(`${selectedEvent}-${selectedPlan.id}`); setActiveScreen('studio'); }}
+                onClick={() => {
+                  const eventName = selectedEvent ? EVENTS.find(e => e.id === selectedEvent)?.title : 'Event';
+                  const text = `Hi, I'm interested in the ${currentDesign.title} package for my ${eventName}!\n\n*Plan:* ${selectedPlan.name}\n*Starting from:* ₹${selectedPlan.price.toLocaleString('en-IN')}\n\n*Features:*\n${selectedPlan.features.map(f => `✅ ${f}`).join('\n')}\n\nCould you provide more details?`;
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                }}
                 className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
                 style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
               >
