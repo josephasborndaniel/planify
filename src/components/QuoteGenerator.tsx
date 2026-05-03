@@ -276,7 +276,7 @@ export function QuoteGenerator() {
   const inputCls = 'w-full px-3 py-2 rounded-xl text-sm outline-none';
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: bg, color: text }}>
+    <div className="min-h-screen pb-44" style={{ background: bg, color: text }}>
       {/* Header */}
       <div className="px-4 pt-5 pb-3" style={{ borderBottom: `1px solid ${border}` }}>
         <div className="flex items-center gap-2 mb-0.5">
@@ -410,8 +410,8 @@ export function QuoteGenerator() {
       </div>
 
       {/* Sticky Export */}
-      <div className="fixed bottom-0 left-0 right-0 px-4 py-4 z-20"
-        style={{ background: isDark ? 'rgba(26,16,37,0.97)' : 'rgba(240,247,255,0.97)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${border}` }}>
+      <div className="fixed bottom-[64px] left-0 right-0 px-4 py-3 z-20"
+        style={{ background: isDark ? 'rgba(26,16,37,0.97)' : 'rgba(240,247,255,0.97)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <button
           onClick={generatePDF}
           disabled={items.length === 0}
