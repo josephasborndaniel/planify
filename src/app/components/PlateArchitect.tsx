@@ -9,7 +9,7 @@ import autoTable from 'jspdf-autotable';
 
 interface MenuItem {
   id: string;
-  category: 'Main Course' | 'Sides' | 'Desserts' | 'Drinks';
+  category: 'Starters' | 'Main Course' | 'Breads' | 'Desserts' | 'Hot Beverages' | 'Cold Drinks & Juices';
   name: string;
   pricePerPlate: number;
   quantity: number;
@@ -17,18 +17,51 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  // ── Starters ──
+  { id: 'st1', category: 'Starters', name: 'Veg Spring Rolls', pricePerPlate: 35, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1606335543042-57c525922933?w=400&h=400&fit=crop' },
+  { id: 'st2', category: 'Starters', name: 'Paneer Tikka', pricePerPlate: 60, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&h=400&fit=crop' },
+  { id: 'st3', category: 'Starters', name: 'Samosa (2 pcs)', pricePerPlate: 25, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&h=400&fit=crop' },
+  { id: 'st4', category: 'Starters', name: 'Veg Seekh Kebab', pricePerPlate: 55, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1599487489047-a02fcd60ebe8?w=400&h=400&fit=crop' },
+  // ── Main Course ──
   { id: 'm1', category: 'Main Course', name: 'Paneer Butter Masala', pricePerPlate: 120, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1603894584214-51e43343360b?w=400&h=400&fit=crop' },
-  { id: 'm3', category: 'Main Course', name: 'Hyderabadi Biryani', pricePerPlate: 150, quantity: 0, imgUrl: birImg },
-  { id: 's1', category: 'Sides', name: 'Butter Naan', pricePerPlate: 30, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=400&h=400&fit=crop' },
-  { id: 'd1', category: 'Desserts', name: 'Gulab Jamun', pricePerPlate: 40, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?w=400&h=400&fit=crop' },
-  { id: 'dr1', category: 'Drinks', name: 'Fresh Mango Lassi', pricePerPlate: 45, quantity: 0, imgUrl: waterImg },
+  { id: 'm2', category: 'Main Course', name: 'Hyderabadi Biryani', pricePerPlate: 150, quantity: 0, imgUrl: birImg },
+  { id: 'm3', category: 'Main Course', name: 'Dal Makhani', pricePerPlate: 90, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=400&fit=crop' },
+  { id: 'm4', category: 'Main Course', name: 'Chicken Tikka Masala', pricePerPlate: 160, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=400&fit=crop' },
+  { id: 'm5', category: 'Main Course', name: 'Chole Bhature', pricePerPlate: 80, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1626132647523-68a11459a5e5?w=400&h=400&fit=crop' },
+  { id: 'm6', category: 'Main Course', name: 'Aloo Gobi', pricePerPlate: 70, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1614149162883-504ce4d13909?w=400&h=400&fit=crop' },
+  { id: 'm7', category: 'Main Course', name: 'Mixed Veg Pulao', pricePerPlate: 85, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1645177628172-a94c1f96debb?w=400&h=400&fit=crop' },
+  { id: 'm8', category: 'Main Course', name: 'Mutton Rogan Josh', pricePerPlate: 200, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop' },
+  // ── Breads ──
+  { id: 'b1', category: 'Breads', name: 'Butter Naan', pricePerPlate: 30, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=400&h=400&fit=crop' },
+  { id: 'b2', category: 'Breads', name: 'Tandoori Roti', pricePerPlate: 15, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=400&fit=crop' },
+  { id: 'b3', category: 'Breads', name: 'Garlic Naan', pricePerPlate: 35, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&h=400&fit=crop' },
+  { id: 'b4', category: 'Breads', name: 'Puri (2 pcs)', pricePerPlate: 20, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1626132647523-68a11459a5e5?w=400&h=400&fit=crop' },
+  { id: 'b5', category: 'Breads', name: 'Jeera Rice', pricePerPlate: 50, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1645177628172-a94c1f96debb?w=400&h=400&fit=crop' },
+  // ── Desserts ──
+  { id: 'd1', category: 'Desserts', name: 'Gulab Jamun (2 pcs)', pricePerPlate: 40, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1589119908995-c6837fa14848?w=400&h=400&fit=crop' },
+  { id: 'd2', category: 'Desserts', name: 'Kheer', pricePerPlate: 35, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1624882860025-3614b9b79fdb?w=400&h=400&fit=crop' },
+  { id: 'd3', category: 'Desserts', name: 'Ice Cream (2 scoops)', pricePerPlate: 50, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=400&fit=crop' },
+  { id: 'd4', category: 'Desserts', name: 'Rasgulla', pricePerPlate: 30, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1634462822612-2aa7ced02b1c?w=400&h=400&fit=crop' },
+  { id: 'd5', category: 'Desserts', name: 'Gajar Halwa', pricePerPlate: 45, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=400&fit=crop' },
+  // ── Hot Beverages ──
+  { id: 'hb1', category: 'Hot Beverages', name: 'Masala Chai', pricePerPlate: 15, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&h=400&fit=crop' },
+  { id: 'hb2', category: 'Hot Beverages', name: 'Filter Coffee', pricePerPlate: 20, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=400&h=400&fit=crop' },
+  { id: 'hb3', category: 'Hot Beverages', name: 'Cappuccino', pricePerPlate: 45, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop' },
+  // ── Cold Drinks & Juices ──
+  { id: 'cd1', category: 'Cold Drinks & Juices', name: 'Fresh Mango Lassi', pricePerPlate: 45, quantity: 0, imgUrl: waterImg },
+  { id: 'cd2', category: 'Cold Drinks & Juices', name: 'Fresh Orange Juice', pricePerPlate: 40, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=400&fit=crop' },
+  { id: 'cd3', category: 'Cold Drinks & Juices', name: 'Watermelon Juice', pricePerPlate: 35, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400&h=400&fit=crop' },
+  { id: 'cd4', category: 'Cold Drinks & Juices', name: 'Cold Coffee', pricePerPlate: 50, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=400&fit=crop' },
+  { id: 'cd5', category: 'Cold Drinks & Juices', name: 'Pineapple Cooler', pricePerPlate: 40, quantity: 0, imgUrl: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=400&fit=crop' },
 ];
 
 const CATEGORY_EMOJIS: Record<string, string> = {
+  'Starters': '🥗',
   'Main Course': '🍛',
-  'Sides': '🫓',
+  'Breads': '🫓',
   'Desserts': '🍮',
-  'Drinks': '🥛',
+  'Hot Beverages': '☕',
+  'Cold Drinks & Juices': '🥤',
 };
 
 export function PlateArchitect() {
@@ -51,8 +84,8 @@ export function PlateArchitect() {
     ));
   };
 
-  const selectedItems = items.filter(i => i.quantity > 0 && i.category !== 'Drinks');
-  const selectedDrinks = items.filter(i => i.quantity > 0 && i.category === 'Drinks');
+  const selectedItems = items.filter(i => i.quantity > 0 && i.category !== 'Hot Beverages' && i.category !== 'Cold Drinks & Juices');
+  const selectedDrinks = items.filter(i => i.quantity > 0 && (i.category === 'Hot Beverages' || i.category === 'Cold Drinks & Juices'));
   const pricePerPlate = items.reduce((sum, item) => sum + (item.pricePerPlate * item.quantity), 0);
   const totalCost = pricePerPlate * guestCount;
   const totalSelected = selectedItems.length + selectedDrinks.length;
@@ -409,7 +442,7 @@ _Detailed PDF attached. Authorised by Planify Event Management._`;
 
         {/* Menu Items */}
         <div className="px-4 py-4 space-y-5">
-          {(['Main Course', 'Sides', 'Desserts', 'Drinks'] as const).map(category => {
+          {(['Starters', 'Main Course', 'Breads', 'Desserts', 'Hot Beverages', 'Cold Drinks & Juices'] as const).map(category => {
             const catItems = items.filter(i => i.category === category);
             if (!catItems.length) return null;
             return (
