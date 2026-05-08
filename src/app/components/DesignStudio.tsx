@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ResourceRibbon } from './ResourceRibbon';
 import { StageCanvas } from './StageCanvas';
 import { IndianRupee, Share2, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { buildWhatsAppLink, saveDesignToSupabase } from '../../lib/whatsapp';
+import html2canvas from 'html2canvas';
 
 interface DroppedItem {
   id: string;
@@ -26,6 +27,7 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
   const [totalCost, setTotalCost] = useState(0);
   const [backgroundImage, setBackgroundImage] = useState<string>('');
   const [sharing, setSharing] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   const bg = isDark ? '#1a1025' : '#f0f7ff';
   const card = isDark ? '#231534' : '#ddeeff';
@@ -67,24 +69,83 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
     if (!droppedItems.length) return;
     setSharing(true);
 
-    const itemList = droppedItems.map(i => ({ name: i.name, quantity: 1 }));
-    const canvasState = { items: droppedItems, background: backgroundImage };
+    try {
+      const itemList = droppedItems.map(i => ({ name: i.name, quantity: 1 }));
+      const canvasState = { items: droppedItems, background: backgroundImage };
 
-    // Save to Supabase and get shareable ID
-    const designId = await saveDesignToSupabase(
-      eventType ?? 'Event',
-      canvasState,
-      itemList,
-    );
+      // Save to Supabase and get shareable ID
+      const designId = await saveDesignToSupabase(
+        eventType ?? 'Event',
+        canvasState,
+        itemList,
+      );
 
-    const waLink = buildWhatsAppLink({
-      eventType: eventType ?? 'Event',
-      items: itemList,
-      designId: designId ?? undefined,
-    });
+      let textMessage = `Hi, here is my custom stage design!\n\n*Event:* ${eventType ?? 'Event'}\n*Total Cost:* ₹${totalCost.toLocaleString('en-IN')}\n\n*Items Included:*\n${itemList.map(i => `- ${i.name}`).join('\n')}`;
+      if (designId) {
+        textMessage += `\n\nDesign ID: ${designId}`;
+      }
 
-    window.open(waLink, '_blank');
-    setSharing(false);
+      // Capture screenshot
+      let imageFile: File | null = null;
+      if (stageRef.current) {
+        try {
+          // Hide UI elements if necessary by selecting them inside stageRef, but our stageRef only contains the canvas
+          const canvas = await html2canvas(stageRef.current, { useCORS: true, backgroundColor: isDark ? '#1a1025' : '#f0f7ff' });
+          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+          if (blob) {
+            imageFile = new File([blob], 'stage-design.png', { type: 'image/png' });
+          }
+        } catch (captureErr) {
+          console.error("Screenshot capture failed:", captureErr);
+        }
+      }
+
+      // Try Web Share API (Mobile native sharing tray)
+      if (imageFile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+        await navigator.share({
+          title: 'My Custom Stage Design',
+          text: textMessage,
+          files: [imageFile],
+        });
+      } else {
+        // Fallback for Desktop: Copy to clipboard and open WhatsApp link
+        if (imageFile) {
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({
+                [imageFile.type]: imageFile,
+              })
+            ]);
+            textMessage += `\n\n*(I have pasted the design image!)*`;
+            alert("📸 Design Image copied to your clipboard!\n\nWhen WhatsApp opens, press Ctrl+V (or Cmd+V) to attach the photo to your message.");
+          } catch (clipboardErr) {
+            console.error("Clipboard write failed, falling back to download:", clipboardErr);
+            // If clipboard fails, download it
+            const url = URL.createObjectURL(imageFile);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'stage-design.png';
+            a.click();
+            URL.revokeObjectURL(url);
+            textMessage += `\n\n*(Please attach the downloaded design image)*`;
+          }
+        }
+
+        const waLink = buildWhatsAppLink({
+          eventType: eventType ?? 'Event',
+          items: itemList,
+          designId: designId ?? undefined,
+        });
+        
+        // We override the default waLink text to include our custom textMessage
+        const finalLink = `https://wa.me/?text=${encodeURIComponent(textMessage)}`;
+        window.open(finalLink, '_blank');
+      }
+    } catch (err) {
+      console.error("Sharing failed:", err);
+    } finally {
+      setSharing(false);
+    }
   };
 
   return (
@@ -133,7 +194,7 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 overflow-auto p-2 sm:p-4">
+      <div className="flex-1 overflow-auto p-2 sm:p-4" ref={stageRef}>
         <StageCanvas
           droppedItems={droppedItems}
           onDrop={handleDrop}
