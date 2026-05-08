@@ -74,14 +74,18 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
       let imageFile: File | null = null;
       if (stageRef.current) {
         try {
-          const canvas = await html2canvas(stageRef.current, { useCORS: true, backgroundColor: isDark ? '#1a1025' : '#f0f7ff' });
-          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+          const canvas = await html2canvas(stageRef.current, { 
+            useCORS: true, 
+            backgroundColor: isDark ? '#1a1025' : '#f0f7ff',
+            scale: 3 // Dramatically improves image resolution
+          });
+          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
           if (blob) {
             imageFile = new File([blob], 'stage-design.jpg', { type: 'image/jpeg' });
           }
-        } catch (captureErr) {
+        } catch (captureErr: any) {
           console.error("Screenshot capture failed:", captureErr);
-          alert("Failed to capture the stage image.");
+          alert("Failed to capture image: " + (captureErr?.message || captureErr));
           return;
         }
       }

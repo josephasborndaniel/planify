@@ -181,24 +181,27 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
           <div 
             onMouseDown={handleRotateStart}
             onTouchStart={handleRotateStart}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#FFFFFF] border-2 border-[#c09cde] rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-[70] shadow-md touch-none"
+            className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-[70] touch-none"
+            style={{ backgroundColor: '#ffffff', border: '2px solid #c09cde', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
           >
-            <RotateCw className="w-4 h-4 text-[#c09cde]" />
+            <RotateCw className="w-4 h-4" style={{ color: '#c09cde' }} />
           </div>
 
           <div 
             onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }}
-            className="absolute top-1/2 -left-10 -translate-y-1/2 w-8 h-8 bg-white border-2 border-blue-500 rounded-full flex items-center justify-center cursor-pointer z-[70] shadow-md"
+            className="absolute top-1/2 -left-10 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer z-[70]"
+            style={{ backgroundColor: '#ffffff', border: '2px solid #3b82f6', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
           >
-            <FlipHorizontal className="w-4 h-4 text-blue-500" />
+            <FlipHorizontal className="w-4 h-4" style={{ color: '#3b82f6' }} />
           </div>
 
           <div 
             onMouseDown={handleResizeStart}
             onTouchStart={handleResizeStart}
-            className="absolute -bottom-4 -right-4 w-8 h-8 bg-[#c09cde] rounded-full flex items-center justify-center cursor-nwse-resize z-[70] shadow-lg border-2 border-white touch-none"
+            className="absolute -bottom-4 -right-4 w-8 h-8 rounded-full flex items-center justify-center cursor-nwse-resize z-[70] touch-none"
+            style={{ backgroundColor: '#c09cde', border: '2px solid #ffffff', boxShadow: '0 10px 15px rgba(0,0,0,0.1)' }}
           >
-            <Maximize2 className="w-4 h-4 text-white" />
+            <Maximize2 className="w-4 h-4" style={{ color: '#ffffff' }} />
           </div>
         </>
       )}
@@ -208,18 +211,17 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
         <img loading="lazy"
           src={item.image}
           alt={item.name}
-          className={`w-full h-auto object-contain transition-all ${
-            isSelected ? 'ring-2 ring-[#c09cde] ring-offset-2 rounded-sm' : ''
-          }`}
+          className={`w-full h-auto object-contain transition-all rounded-sm`}
+          style={isSelected ? { outline: '2px solid #c09cde', outlineOffset: '2px' } : {}}
           draggable={false}
         />
       </div>
 
       {/* Item Label */}
       {isSelected && scale > 0.6 && (
-        <div className="mt-2 p-1 text-center bg-white/40 backdrop-blur-md rounded shadow-xl border border-[#c09cde] text-[#c09cde]">
+        <div className="mt-2 p-1 text-center rounded" style={{ backgroundColor: 'rgba(255,255,255,0.9)', border: '1px solid #c09cde', color: '#c09cde', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
           <div className="font-medium text-[10px] line-clamp-1">{item.name}</div>
-          <div className="text-[#c09cde] text-[10px] font-bold">₹{item.price}</div>
+          <div className="text-[10px] font-bold" style={{ color: '#c09cde' }}>₹{item.price}</div>
         </div>
       )}
 
@@ -227,7 +229,8 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
       {isSelected && (
         <button
           onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}
-          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg hover:bg-red-600 transition-colors z-[80]"
+          className="absolute -top-3 -right-3 rounded-full p-1.5 transition-colors z-[80]"
+          style={{ backgroundColor: '#ef4444', color: '#ffffff', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
         >
           <X className="w-3 h-3" />
         </button>
@@ -265,8 +268,8 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="text-xs sm:text-sm text-[#c09cde] bg-white/40 backdrop-blur-md border border-[#c09cde] px-4 py-2 rounded-full">
-        <span className="font-bold text-[#c09cde]">Stage Area:</span> 10m × 10m
+      <div className="text-xs sm:text-sm px-4 py-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.9)', color: '#c09cde', border: '1px solid #c09cde' }}>
+        <span className="font-bold" style={{ color: '#c09cde' }}>Stage Area:</span> 10m × 10m
       </div>
 
       <div
@@ -274,10 +277,15 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           canvasRef.current = node;
           drop(node);
         }}
-        className={`relative w-full aspect-[4/3] md:h-[650px] rounded-3xl shadow-2xl transition-all overflow-hidden bg-[#ffffff] touch-none ${
-          isOver ? 'ring-4 ring-[#c09cde]' : 'ring-1 ring-[#c09cde]'
-        }`}
-        style={{ maxWidth: '900px', margin: '0 auto', touchAction: 'none' }}
+        className={`relative w-full aspect-[4/3] md:h-[650px] rounded-3xl transition-all overflow-hidden touch-none`}
+        style={{ 
+          maxWidth: '900px', 
+          margin: '0 auto', 
+          touchAction: 'none',
+          backgroundColor: '#ffffff',
+          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+          outline: isOver ? '4px solid #c09cde' : '1px solid #c09cde'
+        }}
       >
         {backgroundImage ? (
           <img loading="lazy" 
@@ -287,8 +295,8 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
             style={{ zIndex: 0 }}
           />
         ) : (
-          <div className="absolute inset-0 opacity-20" style={{ 
-            backgroundImage: 'radial-gradient(#c09cde 1px, transparent 1px)', 
+          <div className="absolute inset-0 opacity-10 bg-grid-pattern" style={{ 
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'30\' height=\'30\' viewBox=\'0 0 30 30\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'1.5\' cy=\'1.5\' r=\'1.5\' fill=\'%23c09cde\'/%3E%3C/svg%3E")',
             backgroundSize: '30px 30px' 
           }} />
         )}
@@ -305,7 +313,7 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
           ))}
 
           {droppedItems.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-[#c09cde] pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ color: '#c09cde' }}>
               <div className="text-center">
                 <Maximize2 className="w-12 h-12 mx-auto mb-2 opacity-20" />
                 <p className="text-lg font-light">Stage is empty</p>
