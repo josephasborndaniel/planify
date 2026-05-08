@@ -70,22 +70,7 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
     setSharing(true);
 
     try {
-      const itemList = droppedItems.map(i => ({ name: i.name, quantity: 1 }));
-      const canvasState = { items: droppedItems, background: backgroundImage };
-
-      // Save to Supabase and get shareable ID
-      const designId = await saveDesignToSupabase(
-        eventType ?? 'Event',
-        canvasState,
-        itemList,
-      );
-
-      let textMessage = `Hi, here is my custom stage design!\n\n*Event:* ${eventType ?? 'Event'}\n*Total Cost:* ₹${totalCost.toLocaleString('en-IN')}\n\n*Items Included:*\n${itemList.map(i => `- ${i.name}`).join('\n')}`;
-      if (designId) {
-        textMessage += `\n\nDesign ID: ${designId}`;
-      }
-
-      // Capture screenshot as JPEG (better compatibility with WhatsApp intents)
+      // Capture screenshot as JPEG
       let imageFile: File | null = null;
       if (stageRef.current) {
         try {
@@ -96,54 +81,28 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
           }
         } catch (captureErr) {
           console.error("Screenshot capture failed:", captureErr);
+          alert("Failed to capture the stage image.");
+          return;
         }
       }
 
-      // Try Web Share API (Mobile native sharing tray)
-      if (imageFile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-        try {
-          // Copy text to clipboard just in case WhatsApp drops the text payload
-          await navigator.clipboard.writeText(textMessage);
-        } catch (e) {
-          // Ignore clipboard errors on mobile
-        }
-        
+      if (!imageFile) return;
+
+      // Try Web Share API (Mobile native sharing tray) - ONLY works on HTTPS or localhost!
+      if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         await navigator.share({
           files: [imageFile],
         });
       } else {
-        // Fallback for Desktop: Copy to clipboard and open WhatsApp link
-        if (imageFile) {
-          try {
-            await navigator.clipboard.write([
-              new ClipboardItem({
-                [imageFile.type]: imageFile,
-              })
-            ]);
-            textMessage += `\n\n*(I have pasted the design image!)*`;
-            alert("📸 Design Image copied to your clipboard!\n\nWhen WhatsApp opens, press Ctrl+V (or Cmd+V) to attach the photo to your message.");
-          } catch (clipboardErr) {
-            console.error("Clipboard write failed, falling back to download:", clipboardErr);
-            // If clipboard fails, download it
-            const url = URL.createObjectURL(imageFile);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'stage-design.png';
-            a.click();
-            URL.revokeObjectURL(url);
-            textMessage += `\n\n*(Please attach the downloaded design image)*`;
-          }
-        }
-
-        const waLink = buildWhatsAppLink({
-          eventType: eventType ?? 'Event',
-          items: itemList,
-          designId: designId ?? undefined,
-        });
+        // Fallback if Web Share API is blocked (e.g., testing on local IP like http://192.168... instead of HTTPS)
+        const url = URL.createObjectURL(imageFile);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'planify-stage-design.jpg';
+        a.click();
+        URL.revokeObjectURL(url);
         
-        // We override the default waLink text to include our custom textMessage
-        const finalLink = `https://wa.me/?text=${encodeURIComponent(textMessage)}`;
-        window.open(finalLink, '_blank');
+        alert("📸 Image Downloaded!\n\nYour browser blocked the native share tray (this happens when testing on a local HTTP network). The image has been downloaded instead—please attach it in WhatsApp manually!");
       }
     } catch (err) {
       console.error("Sharing failed:", err);
