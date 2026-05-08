@@ -109,7 +109,6 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
         }
         
         await navigator.share({
-          text: textMessage, // Removed title: improves WhatsApp Android intent resolution
           files: [imageFile],
         });
       } else {
