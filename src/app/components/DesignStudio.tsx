@@ -85,15 +85,14 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
         textMessage += `\n\nDesign ID: ${designId}`;
       }
 
-      // Capture screenshot
+      // Capture screenshot as JPEG (better compatibility with WhatsApp intents)
       let imageFile: File | null = null;
       if (stageRef.current) {
         try {
-          // Hide UI elements if necessary by selecting them inside stageRef, but our stageRef only contains the canvas
           const canvas = await html2canvas(stageRef.current, { useCORS: true, backgroundColor: isDark ? '#1a1025' : '#f0f7ff' });
-          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+          const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
           if (blob) {
-            imageFile = new File([blob], 'stage-design.png', { type: 'image/png' });
+            imageFile = new File([blob], 'stage-design.jpg', { type: 'image/jpeg' });
           }
         } catch (captureErr) {
           console.error("Screenshot capture failed:", captureErr);
@@ -102,9 +101,15 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
 
       // Try Web Share API (Mobile native sharing tray)
       if (imageFile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+        try {
+          // Copy text to clipboard just in case WhatsApp drops the text payload
+          await navigator.clipboard.writeText(textMessage);
+        } catch (e) {
+          // Ignore clipboard errors on mobile
+        }
+        
         await navigator.share({
-          title: 'My Custom Stage Design',
-          text: textMessage,
+          text: textMessage, // Removed title: improves WhatsApp Android intent resolution
           files: [imageFile],
         });
       } else {
