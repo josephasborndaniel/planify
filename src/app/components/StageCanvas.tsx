@@ -47,6 +47,7 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
 
   // Touch handling for moving items
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
     if (e.touches.length !== 1) return;
     
     const touch = e.touches[0];
@@ -54,10 +55,11 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
     const startY = touch.clientY;
     const itemStartX = currentX;
     const itemStartY = currentY;
+    let hasMoved = false;
 
     const handleTouchMove = (moveEvent: TouchEvent) => {
       if (!canvasRef.current) return;
-      
+      hasMoved = true;
       const moveTouch = moveEvent.touches[0];
       const deltaX = moveTouch.clientX - startX;
       const deltaY = moveTouch.clientY - startY;
@@ -67,7 +69,11 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
     };
 
     const handleTouchEnd = () => {
-      onMove(item.id, currentX, currentY);
+      if (!hasMoved) {
+        setIsSelected(!isSelected);
+      } else {
+        onMove(item.id, currentX, currentY);
+      }
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
@@ -78,12 +84,15 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
 
   // Mouse handling for desktop
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const startX = e.clientX;
     const startY = e.clientY;
     const itemStartX = currentX;
     const itemStartY = currentY;
+    let hasMoved = false;
 
     const onMouseMove = (moveEvent: MouseEvent) => {
+      hasMoved = true;
       const deltaX = moveEvent.clientX - startX;
       const deltaY = moveEvent.clientY - startY;
 
@@ -92,7 +101,11 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
     };
 
     const onMouseUp = () => {
-      onMove(item.id, currentX, currentY);
+      if (!hasMoved) {
+        setIsSelected(!isSelected);
+      } else {
+        onMove(item.id, currentX, currentY);
+      }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -159,10 +172,6 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
       ref={itemRef}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsSelected(!isSelected);
-      }}
       className={`absolute cursor-move touch-none select-none transition-shadow ${
         isSelected ? 'z-50' : 'z-10'
       }`}
