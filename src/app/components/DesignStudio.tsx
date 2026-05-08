@@ -70,6 +70,26 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
     setSharing(true);
 
     try {
+      const itemList = droppedItems.map(i => ({ name: i.name, quantity: 1 }));
+      const canvasState = { items: droppedItems, background: backgroundImage };
+
+      // Save to Supabase and get shareable ID
+      let designId = '';
+      try {
+        designId = await saveDesignToSupabase(
+          eventType ?? 'Event',
+          canvasState,
+          itemList,
+        );
+      } catch (e) {
+        console.error("Supabase save failed", e);
+      }
+
+      let textMessage = `Hi, here is my custom stage design!\n\n*Event:* ${eventType ?? 'Event'}\n*Total Cost:* ₹${totalCost.toLocaleString('en-IN')}\n\n*Items Included:*\n${itemList.map(i => `- ${i.name}`).join('\n')}`;
+      if (designId) {
+        textMessage += `\n\nDesign ID: ${designId}`;
+      }
+
       // Capture screenshot as JPEG
       let imageFile: File | null = null;
       if (stageRef.current) {
@@ -93,10 +113,17 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
       if (!imageFile) return;
 
       // Try Web Share API (Mobile native sharing tray) - ONLY works on HTTPS or localhost!
-      if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+      if (navigator.canShare && navigator.canShare({ files: [imageFile], text: textMessage })) {
+        try { await navigator.clipboard.writeText(textMessage); } catch (e) {} // Backup clipboard
+        
         await navigator.share({
+          title: 'My Stage Design',
+          text: textMessage,
           files: [imageFile],
         });
+      } else if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+        try { await navigator.clipboard.writeText(textMessage); } catch (e) {} // Backup clipboard
+        await navigator.share({ files: [imageFile] });
       } else {
         // Fallback if Web Share API is blocked (e.g., testing on local IP like http://192.168... instead of HTTPS)
         const url = URL.createObjectURL(imageFile);
@@ -106,7 +133,11 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
         a.click();
         URL.revokeObjectURL(url);
         
-        alert("📸 Image Downloaded!\n\nYour browser blocked the native share tray (this happens when testing on a local HTTP network). The image has been downloaded instead—please attach it in WhatsApp manually!");
+        // Also open WhatsApp web fallback for the text
+        const finalLink = `https://wa.me/?text=${encodeURIComponent(textMessage)}`;
+        window.open(finalLink, '_blank');
+        
+        alert("📸 Image Downloaded!\n\nYour browser blocked the native share tray. The image has been downloaded instead, and WhatsApp is opening in a new tab with your text details. Please attach the downloaded image to the chat manually!");
       }
     } catch (err) {
       console.error("Sharing failed:", err);
