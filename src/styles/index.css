@@ -2,19 +2,11 @@
 @import './tailwind.css';
 @import './theme.css';
 
-/* ── Plan card auto-scroll marquee ── */
-@keyframes marquee-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+/* ── Scrollbar Utilities ── */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.plan-marquee {
-  animation: marquee-scroll 12s linear infinite;
-  width: max-content;
-}
-
-/* Pause animation when user hovers or touches a card */
-.plan-marquee:hover,
-.plan-marquee:active {
-  animation-play-state: paused;
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

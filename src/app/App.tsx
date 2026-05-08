@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -220,13 +220,39 @@ function ThemeToggle() {
 }
 
 export default function App() {
-  const { isDark } = useTheme();
-  const [activeScreen, setActiveScreen] = useState<'home' | 'studio' | 'catering' | 'quotes' | /* 'payments' | */ 'profile'>('home');
+  const { theme, toggleTheme } = useTheme();
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
-  const [activePackage, setActivePackage] = useState<string | null>(null);
+  const [activePackage, setActivePackage] = useState<any>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [currentDesignIndex, setCurrentDesignIndex] = useState(0);
-  const [selectedDesign, setSelectedDesign] = useState<Design | null>(null);
+  const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
+  const [activeScreen, setActiveScreen] = useState<Screen>('home');
+
+  // Carousel ref and state for touch-friendly autoscroll
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || isHovered) return;
+
+    let animationFrameId: number;
+
+    const scroll = (time: number) => {
+      if (el && !isHovered) {
+        el.scrollLeft += 0.5;
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHovered, selectedEvent, activeScreen]);
+
+  const isDark = theme === 'dark';
   const isTouchDevice =
     typeof window !== 'undefined' &&
     ('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -519,8 +545,16 @@ export default function App() {
               <p className="text-xs font-semibold uppercase tracking-widest px-1" style={{ color: textMuted }}>Or choose a package</p>
 
               {/* Auto-scrolling plan carousel — all 3 visible & looping */}
-              <div className="relative overflow-hidden rounded-2xl">
-                <div className="flex gap-3 plan-marquee">
+              <div 
+                className="relative overflow-x-auto hide-scrollbar rounded-2xl"
+                ref={carouselRef}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onTouchStart={() => setIsHovered(true)}
+                onTouchEnd={() => setIsHovered(false)}
+                style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
+              >
+                <div className="flex gap-3 w-max pb-2">
                   {/* Render twice for seamless infinite loop */}
                   {[...PLAN_TIERS, ...PLAN_TIERS].map((tier, idx) => {
                     const currentEventPlans = (selectedEvent && EVENT_PLANS[selectedEvent]) ? EVENT_PLANS[selectedEvent] : EVENT_PLANS['wedding'];
