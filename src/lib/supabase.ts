@@ -44,6 +44,7 @@ export interface VendorProfile {
   phone: string;
   email: string;
   address: string;
+  banner_image?: string;
   lat: number;
   lng: number;
   verified: boolean;

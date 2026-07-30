@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { DesignStudio } from './components/DesignStudio';
 import { PlateArchitect } from './components/PlateArchitect';
-import { QuoteGenerator } from '../components/QuoteGenerator';
+
 // import { PaymentTracker } from '../components/PaymentTracker'; // TODO: integrate later
-import { VendorProfilePage } from '../components/VendorProfile';
 import { useTheme } from './context/ThemeContext';
 import {
   Users, Cake, Baby, Home, Church, ArrowRight, ArrowLeft,
   Zap, ShieldCheck, Star, Ruler, Sparkles, UtensilsCrossed, X,
-  Sun, Moon, ChevronRight, FileText, CreditCard, Building2, LayoutGrid
+  Sun, Moon, ChevronRight, FileText, CreditCard, LayoutGrid
 } from 'lucide-react';
 
 interface Design {
@@ -31,153 +31,7 @@ interface Plan {
   designs: Design[];
 }
 
-const EVENT_PLANS: Record<string, Record<string, Plan>> = {
-  wedding: {
-    budget: {
-      id: 'budget',
-      name: 'Budget',
-      price: 50000,
-      coverImage: '/wedding-cover-simple1.jpg',
-      description: 'Basic wedding setup with essential elements and standard services.',
-      features: ['Basic decoration', 'Standard setup', 'Single light scheme', 'Basic catering'],
-      designs: [
-        { id: 'wed-budget-1', image: '/wedding-cover-simple1.jpg', title: 'Classic Simple', description: 'Clean and minimal design with essential setup' },
-        { id: 'wed-budget-2', image: '/wedding-cover-simple2.png', title: 'Elegant Basic', description: 'Elegant yet affordable design concept' },
-        { id: 'wed-budget-3', image: '/wedding-cover-simple3.png', title: 'Modern Minimal', description: 'Contemporary minimal design approach' }
-      ]
-    },
-    standard: {
-      id: 'standard',
-      name: 'Standard',
-      price: 120000,
-      coverImage: '/wedding-cover-strandard1.png',
-      description: 'Complete wedding package with premium elements and enhanced services.',
-      features: ['Premium decoration', 'Advanced setup', 'Multi-light setup', 'Premium catering'],
-      designs: [
-        { id: 'wed-standard-1', image: '/wedding-cover-strandard1.png', title: 'Premium Elegant', description: 'Sophisticated design with premium elements' },
-        { id: 'wed-standard-2', image: '/wedding-cover-strandard2.png', title: 'Modern Chic', description: 'Contemporary chic aesthetic' },
-        { id: 'wed-standard-3', image: '/wedding-cover-strandard3.png', title: 'Luxury Standard', description: 'Luxurious yet accessible design' }
-      ]
-    },
-    premium: {
-      id: 'premium',
-      name: 'Premium',
-      price: 250000,
-      coverImage: '/wedding-cover-premium1.png',
-      description: 'Luxury wedding experience with exclusive elements and VIP services.',
-      features: ['Luxury decoration', 'Full customization', 'Advanced lighting design', 'Gourmet catering'],
-      designs: [
-        { id: 'wed-premium-1', image: '/wedding-cover-premium1.png', title: 'Grand Luxury', description: 'Grand and luxurious event experience' },
-        { id: 'wed-premium-2', image: '/wedding-cover-premium2.png', title: 'Opulent Elegance', description: 'Opulent and elegant celebration' },
-        { id: 'wed-premium-3', image: '/wedding-cover-premium3.png', title: 'Exclusive VIP', description: 'Exclusive VIP luxury experience' }
-      ]
-    }
-  },
-  birthday: {
-    budget: {
-      id: 'budget',
-      name: 'Budget',
-      price: 5000,
-      coverImage: '/bday-budget.png',
-      description: 'Fun and essential setup for a memorable birthday.',
-      features: ['Balloon arch', 'Table decor', 'Basic lighting', 'Simple cake stand'],
-      designs: [
-        { id: 'bday-budget-1', image: '/bday-budget.png', title: 'Classic Party', description: 'Bright and fun classic birthday' }
-      ]
-    },
-    standard: {
-      id: 'standard',
-      name: 'Standard',
-      price: 15000,
-      coverImage: '/bday-standard.png',
-      description: 'Enhanced birthday experience with themed decor.',
-      features: ['Themed decoration', 'Backdrop setup', 'LED lighting', 'Premium dessert table'],
-      designs: [
-        { id: 'bday-standard-1', image: '/bday-standard.png', title: 'Themed Delight', description: 'Immersive themed birthday' }
-      ]
-    },
-    premium: {
-      id: 'premium',
-      name: 'Premium',
-      price: 35000,
-      coverImage: '/bday-premium.png',
-      description: 'Ultimate VIP birthday bash with grand scale elements.',
-      features: ['Grand themed decor', 'Stage & dance floor', 'Custom light show', 'Full gourmet catering'],
-      designs: [
-        { id: 'bday-premium-1', image: '/bday-premium.png', title: 'Grand Bash', description: 'Over-the-top VIP celebration' }
-      ]
-    }
-  },
-  baby: {
-    budget: {
-      id: 'budget', name: 'Budget', price: 8000,
-      coverImage: '/baby-budget.png',
-      description: 'Soft and simple baby shower essentials.',
-      features: ['Pastel decor', 'Seating setup', 'Basic treats'],
-      designs: [{ id: 'baby-b1', image: '/baby-budget.png', title: 'Soft Pastels', description: 'Gentle pastel theme' }]
-    },
-    standard: {
-      id: 'standard', name: 'Standard', price: 18000,
-      coverImage: '/baby-standard.png',
-      description: 'Beautifully crafted shower with custom themes.',
-      features: ['Custom backdrop', 'Themed desserts', 'Floral elements'],
-      designs: [{ id: 'baby-s1', image: '/baby-standard.png', title: 'Themed Joy', description: 'Cohesive custom theme' }]
-    },
-    premium: {
-      id: 'premium', name: 'Premium', price: 30000,
-      coverImage: '/baby-premium.png',
-      description: 'Luxurious baby shower with premium installations.',
-      features: ['Grand floral arch', 'Premium seating', 'Gourmet spread'],
-      designs: [{ id: 'baby-p1', image: '/baby-premium.png', title: 'Luxury Arrival', description: 'High-end lavish shower' }]
-    }
-  },
-  housewarming: {
-    budget: {
-      id: 'budget', name: 'Budget', price: 10000,
-      coverImage: '/hw-budget.png',
-      description: 'Welcoming setup with basic floral decor.',
-      features: ['Entrance floral', 'Basic lighting', 'Simple seating'],
-      designs: [{ id: 'hw-b1', image: '/hw-budget.png', title: 'Warm Welcome', description: 'Simple and inviting' }]
-    },
-    standard: {
-      id: 'standard', name: 'Standard', price: 20000,
-      coverImage: '/hw-standard.png',
-      description: 'Elegant housewarming with full home decor touches.',
-      features: ['Full floral garlands', 'Ambient lighting', 'Catering setup'],
-      designs: [{ id: 'hw-s1', image: '/hw-standard.png', title: 'Elegant Entry', description: 'Sophisticated home styling' }]
-    },
-    premium: {
-      id: 'premium', name: 'Premium', price: 40000,
-      coverImage: '/hw-premium.png',
-      description: 'Extravagant home celebration with premium decor.',
-      features: ['Grand entrance', 'Custom lighting design', 'Live music space'],
-      designs: [{ id: 'hw-p1', image: '/hw-premium.png', title: 'Grand Estate', description: 'Luxury home presentation' }]
-    }
-  },
-  memorial: {
-    budget: {
-      id: 'budget', name: 'Budget', price: 4000,
-      coverImage: '/mem-budget.png',
-      description: 'Respectful and simple arrangement.',
-      features: ['White drapes', 'Basic floral stands', 'Simple seating'],
-      designs: [{ id: 'mem-b1', image: '/mem-budget.png', title: 'Simple Tribute', description: 'Quiet and respectful' }]
-    },
-    standard: {
-      id: 'standard', name: 'Standard', price: 8000,
-      coverImage: '/mem-standard.png',
-      description: 'Elegant memorial with beautiful floral tributes.',
-      features: ['Full white drapes', 'Premium floral wreaths', 'Audio setup'],
-      designs: [{ id: 'mem-s1', image: '/mem-standard.png', title: 'Elegant Farewell', description: 'Beautiful floral setup' }]
-    },
-    premium: {
-      id: 'premium', name: 'Premium', price: 15000,
-      coverImage: '/mem-premium.png',
-      description: 'Premium tribute with comprehensive arrangements.',
-      features: ['Extensive floral design', 'Ambient lighting', 'Catering service'],
-      designs: [{ id: 'mem-p1', image: '/mem-premium.png', title: 'Honored Memory', description: 'Comprehensive and grand' }]
-    }
-  }
-};
+
 
 const EVENTS = [
   { id: 'wedding', title: 'Weddings', desc: 'Grand stages & floral drapes', icon: <Users className="w-5 h-5" />, emoji: '💍', needsStageCustomization: true },
@@ -227,6 +81,42 @@ export default function App() {
   const [currentDesignIndex, setCurrentDesignIndex] = useState(0);
   const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
   const [activeScreen, setActiveScreen] = useState<Screen>('home');
+  const [dbPackages, setDbPackages] = useState<Record<string, Record<string, Plan>> | null>(null);
+  const [eventDate, setEventDate] = useState('');
+  const [vendorBanner, setVendorBanner] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDbPackages = async () => {
+      if (!supabase) return;
+      const { data } = await supabase.from('packages').select('*');
+      if (data && data.length > 0) {
+        const formatted: any = {};
+        data.forEach(pkg => {
+          if (!formatted[pkg.event_type]) formatted[pkg.event_type] = {};
+          formatted[pkg.event_type][pkg.tier_id] = {
+            id: pkg.tier_id,
+            name: pkg.name,
+            price: pkg.price,
+            coverImage: pkg.cover_image,
+            description: pkg.description,
+            features: pkg.features || [],
+            designs: [
+              { id: pkg.id + '_1', image: pkg.cover_image, title: 'Main Cover', description: pkg.description },
+              ...(pkg.image_2 ? [{ id: pkg.id + '_2', image: pkg.image_2, title: 'Gallery View', description: pkg.description_2 || '' }] : []),
+              ...(pkg.image_3 ? [{ id: pkg.id + '_3', image: pkg.image_3, title: 'Gallery View', description: pkg.description_3 || '' }] : [])
+            ]
+          };
+        });
+        setDbPackages(formatted);
+      }
+      
+      const { data: vData } = await supabase.from('vendor_profile').select('banner_image').limit(1).single();
+      if (vData && vData.banner_image) {
+        setVendorBanner(vData.banner_image);
+      }
+    };
+    fetchDbPackages();
+  }, []);
 
   // Carousel ref and state for touch-friendly autoscroll
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -240,9 +130,13 @@ export default function App() {
 
     const scroll = (time: number) => {
       if (el && !isHovered) {
-        el.scrollLeft += 0.5;
-        if (el.scrollLeft >= el.scrollWidth / 2) {
-          el.scrollLeft = 0;
+        // Only scroll if we have overflow
+        if (el.scrollWidth > el.clientWidth) {
+          el.scrollLeft += 0.5;
+          // The seamless loop point is exactly halfway through the duplicated content
+          if (el.scrollLeft >= el.scrollWidth / 2) {
+            el.scrollLeft = 0;
+          }
         }
       }
       animationFrameId = requestAnimationFrame(scroll);
@@ -349,17 +243,52 @@ export default function App() {
             </div>
 
             <div className="flex flex-col gap-2 pt-1">
-              <button
-                onClick={() => {
-                  const eventName = selectedEvent ? EVENTS.find(e => e.id === selectedEvent)?.title : 'Event';
-                  const text = `Hi, I'm interested in the ${currentDesign.title} package for my ${eventName}!\n\n*Plan:* ${selectedPlan.name}\n*Starting from:* ₹${selectedPlan.price.toLocaleString('en-IN')}\n\n*Features:*\n${selectedPlan.features.map(f => `✅ ${f}`).join('\n')}\n\nCould you provide more details?`;
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                }}
-                className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
-                style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
-              >
-                Start with {currentDesign.title} →
-              </button>
+              <input 
+                type="date" 
+                value={eventDate} 
+                onChange={e => setEventDate(e.target.value)}
+                className="w-full px-3 py-3 rounded-xl text-sm outline-none font-bold"
+                style={{ background: isDark ? '#1a1025' : '#f0f7ff', color: text, border: `1px solid ${border}` }}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={async () => {
+                    if (!eventDate) {
+                      alert("Please select an event date first.");
+                      return;
+                    }
+                    const eventName = selectedEvent ? EVENTS.find(e => e.id === selectedEvent)?.title : 'Event';
+                    
+                    // Save order to Supabase
+                    await supabase.from('quotes').insert([{
+                      quote_type: 'package',
+                      event_type: eventName,
+                      total: selectedPlan.price,
+                      client_name: 'App User (Package Booking)',
+                      event_date: eventDate || null,
+                      line_items: [{ name: currentDesign.title, qty: 1, unitPrice: selectedPlan.price }]
+                    }]);
+
+                    alert("✅ Booking Submitted! The vendor will review and accept your request shortly.");
+                  }}
+                  className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  style={{ background: `linear-gradient(135deg, ${purple}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
+                >
+                  Book Now
+                </button>
+
+                <button
+                  onClick={() => {
+                    const eventName = selectedEvent ? EVENTS.find(e => e.id === selectedEvent)?.title : 'Event';
+                    const text = `Hi, I'm interested in the ${currentDesign.title} package for my ${eventName} on ${eventDate || 'TBD'}!\n\n*Plan:* ${selectedPlan.name}\n*Starting from:* ₹${selectedPlan.price.toLocaleString('en-IN')}\n\nCould you provide more details?`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                  }}
+                  className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  style={{ background: isDark ? '#231534' : '#fff', color: purple, border: `2px solid ${purple}` }}
+                >
+                  WhatsApp Inquiry
+                </button>
+              </div>
               <button
                 onClick={() => { setSelectedPlan(null); setCurrentDesignIndex(0); setSelectedDesign(null); }}
                 className="w-full py-3 rounded-2xl font-medium text-sm transition-all active:scale-95"
@@ -410,15 +339,7 @@ export default function App() {
     );
   }
 
-  // ── QUOTE GENERATOR VIEW ───────────────────────────────────────────────────────
-  if (activeScreen === 'quotes') {
-    return (
-      <>
-        <QuoteGenerator />
-        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
-      </>
-    );
-  }
+
 
   // ── PAYMENT TRACKER VIEW (commented out — integrate later) ────────────────────
   // if (activeScreen === 'payments') {
@@ -429,16 +350,6 @@ export default function App() {
   //     </>
   //   );
   // }
-
-  // ── VENDOR PROFILE VIEW ────────────────────────────────────────────────────────
-  if (activeScreen === 'profile') {
-    return (
-      <>
-        <VendorProfilePage />
-        <BottomNav active={activeScreen} onNav={setActiveScreen} isDark={isDark} border={border} card={card} text={text} purple={purple} />
-      </>
-    );
-  }
 
   // ── HOME VIEW ─────────────────────────────────────────────────────────────────
   return (
@@ -470,14 +381,24 @@ export default function App() {
       {/* ── HERO BANNER ── */}
       <div className="px-4 pt-5 pb-2 max-w-lg mx-auto">
         <div
-          className="rounded-3xl p-5 relative overflow-hidden"
-          style={{ background: `linear-gradient(135deg, ${isDark ? '#2d1e45' : '#c8e4ff'}, ${isDark ? '#3d2860' : '#b3d9ff'})` }}
+          className="rounded-3xl p-5 relative overflow-hidden bg-cover bg-center"
+          style={{ 
+            background: vendorBanner 
+              ? `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${vendorBanner}) center/cover`
+              : `linear-gradient(135deg, ${isDark ? '#2d1e45' : '#c8e4ff'}, ${isDark ? '#3d2860' : '#b3d9ff'})` 
+          }}
         >
-          <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-20" style={{ background: purple, transform: 'translate(30%, -30%)' }} />
-          <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full opacity-10" style={{ background: isDark ? '#a07ac8' : '#5aa0e0', transform: 'translate(-30%, 30%)' }} />
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] mb-1" style={{ color: purple }}>✨ Welcome</p>
-          <h2 className="text-2xl font-black leading-tight mb-1.5" style={{ color: text }}>Plan your perfect event</h2>
-          <p className="text-sm leading-relaxed" style={{ color: textMuted }}>Design stages, plan menus & get instant quotes — all in one app.</p>
+          {!vendorBanner && (
+            <>
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-20" style={{ background: purple, transform: 'translate(30%, -30%)' }} />
+              <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full opacity-10" style={{ background: isDark ? '#a07ac8' : '#5aa0e0', transform: 'translate(-30%, 30%)' }} />
+            </>
+          )}
+          <div className="relative z-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] mb-1" style={{ color: vendorBanner ? '#c09cde' : purple }}>✨ Welcome</p>
+            <h2 className="text-2xl font-black leading-tight mb-1.5" style={{ color: vendorBanner ? '#ffffff' : text }}>Plan your perfect event</h2>
+            <p className="text-sm leading-relaxed" style={{ color: vendorBanner ? 'rgba(255,255,255,0.8)' : textMuted }}>Design stages, plan menus & get instant quotes — all in one app.</p>
+          </div>
         </div>
       </div>
 
@@ -544,7 +465,7 @@ export default function App() {
 
               <p className="text-xs font-semibold uppercase tracking-widest px-1" style={{ color: textMuted }}>Or choose a package</p>
 
-              {/* Auto-scrolling plan carousel — all 3 visible & looping */}
+              {/* Plan carousel */}
               <div 
                 className="relative overflow-x-auto hide-scrollbar rounded-2xl"
                 ref={carouselRef}
@@ -555,10 +476,14 @@ export default function App() {
                 style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
               >
                 <div className="flex gap-3 w-max pb-2">
-                  {/* Render twice for seamless infinite loop */}
-                  {[...PLAN_TIERS, ...PLAN_TIERS].map((tier, idx) => {
-                    const currentEventPlans = (selectedEvent && EVENT_PLANS[selectedEvent]) ? EVENT_PLANS[selectedEvent] : EVENT_PLANS['wedding'];
+                  {/* Render 4 times for a flawless infinite loop on any screen size */}
+                  {[...PLAN_TIERS, ...PLAN_TIERS, ...PLAN_TIERS, ...PLAN_TIERS].map((tier, idx) => {
+                    const basePlans = dbPackages || {};
+                    const currentEventPlans = (selectedEvent && basePlans[selectedEvent]) ? basePlans[selectedEvent] : (basePlans['wedding'] || {});
                     const plan = currentEventPlans[tier.id];
+                    
+                    if (!plan) return null; // Safe fallback
+                    
                     return (
                       <button
                         key={`${tier.id}-${idx}`}
@@ -637,7 +562,7 @@ export default function App() {
 }
 
 // ── Bottom Navigation Bar ─────────────────────────────────────────────────────
-type Screen = 'home' | 'studio' | 'catering' | 'quotes' | /* 'payments' | */ 'profile';
+type Screen = 'home' | 'studio' | 'catering' | 'quotes' /* | 'payments' */;
 
 function BottomNav({ active, onNav, isDark, border, card, text, purple }: {
   active: Screen;
@@ -646,9 +571,7 @@ function BottomNav({ active, onNav, isDark, border, card, text, purple }: {
 }) {
   const items = [
     { id: 'home' as Screen,     label: 'Home',    icon: <LayoutGrid className="w-5 h-5" /> },
-    { id: 'quotes' as Screen,   label: 'Quotes',  icon: <FileText className="w-5 h-5" /> },
     // { id: 'payments' as Screen, label: 'Pay', icon: <CreditCard className="w-5 h-5" /> }, // TODO: integrate later
-    { id: 'profile' as Screen,  label: 'Vendor',  icon: <Building2 className="w-5 h-5" /> },
   ];
 
   return (

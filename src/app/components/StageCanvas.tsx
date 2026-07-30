@@ -197,9 +197,12 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
           </div>
 
           <div 
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }}
-            className="absolute top-1/2 -left-10 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer z-[70]"
-            style={{ backgroundColor: '#ffffff', border: '2px solid #3b82f6', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+            onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setIsFlipped(!isFlipped); }}
+            className="absolute top-1/2 -left-10 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer z-[70] active:scale-90 transition-transform"
+            style={{ backgroundColor: '#ffffff', border: '2px solid #3b82f6', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', touchAction: 'none' }}
           >
             <FlipHorizontal className="w-4 h-4" style={{ color: '#3b82f6' }} />
           </div>
@@ -237,13 +240,27 @@ function DraggableItem({ item, onRemove, onMove, canvasRef }: {
       {/* Remove Button */}
       {isSelected && (
         <button
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}
-          className="absolute -top-3 -right-3 rounded-full p-1.5 transition-colors z-[80]"
-          style={{ backgroundColor: '#ef4444', color: '#ffffff', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+          onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); onRemove(item.id); }}
+          className="absolute -top-3 -right-3 rounded-full p-1.5 transition-all z-[80] active:scale-90"
+          style={{
+            backgroundColor: '#ef4444',
+            color: '#ffffff',
+            boxShadow: '0 4px 12px rgba(239,68,68,0.5)',
+            border: '2px solid #fff',
+            width: 26, height: 26,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            touchAction: 'none',
+            cursor: 'pointer'
+          }}
+          title="Remove from canvas"
         >
           <X className="w-3 h-3" />
         </button>
       )}
+
     </div>
   );
 }
@@ -297,12 +314,18 @@ export function StageCanvas({ droppedItems, onDrop, onRemoveItem, onMoveItem, ba
         }}
       >
         {backgroundImage ? (
-          <img loading="lazy" 
+          <img
+            loading="lazy"
             src={backgroundImage}
             alt="background"
-            className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none opacity-90"
-            style={{ zIndex: 0 }}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              width: '100%', height: '100%',
+              objectFit: 'fill', objectPosition: 'center',
+              zIndex: 0, display: 'block'
+            }}
           />
+
         ) : (
           <div className="absolute inset-0 opacity-10 bg-grid-pattern" style={{ 
             backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'30\' height=\'30\' viewBox=\'0 0 30 30\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'1.5\' cy=\'1.5\' r=\'1.5\' fill=\'%23c09cde\'/%3E%3C/svg%3E")',

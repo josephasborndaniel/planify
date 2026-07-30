@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FileText, Download, Plus, Trash2, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTheme } from '../app/context/ThemeContext';
+import { supabase } from '../lib/supabase';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -263,6 +264,21 @@ export function QuoteGenerator() {
 
     const waText = `🎪 *Planify Event Quotation*\n\n*Quote:* ${quoteNo}\n*Client:* ${clientName || 'N/A'}\n*Event:* ${eventType}\n*Date:* ${eventDate || 'TBD'}\n*Guests:* ${guestCount.toLocaleString('en-IN')}\n*Items:* ${items.length}\n*Subtotal:* ₹${subtotal.toLocaleString('en-IN')}\n*GST (18%):* ₹${gst.toLocaleString('en-IN')}\n*Grand Total:* ₹${total.toLocaleString('en-IN')}\n\n_PDF quotation attached. Authorised by Planify._`;
 
+    // Save to Database so Admin can see it
+    supabase.from('quotes').insert([{
+      quote_type: 'custom_stage',
+      event_type: eventType,
+      guest_count: guestCount,
+      line_items: items,
+      subtotal,
+      gst,
+      total,
+      event_date: eventDate || null,
+      client_name: clientName || 'Guest'
+    }]).then(({ error }) => {
+      if (error) console.error("Error saving quote", error);
+    });
+
     if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
       navigator.share({ title: `Planify Quote ${quoteNo}`, text: waText, files: [pdfFile] })
         .catch(() => doc.save(fileName));
@@ -276,7 +292,7 @@ export function QuoteGenerator() {
   const inputCls = 'w-full px-3 py-2 rounded-xl text-sm outline-none';
 
   return (
-    <div className="min-h-screen pb-44" style={{ background: bg, color: text }}>
+    <div className="pb-8 rounded-3xl" style={{ background: bg, color: text }}>
       {/* Header */}
       <div className="px-4 pt-5 pb-3" style={{ borderBottom: `1px solid ${border}` }}>
         <div className="flex items-center gap-2 mb-0.5">
@@ -409,16 +425,15 @@ export function QuoteGenerator() {
         )}
       </div>
 
-      {/* Sticky Export */}
-      <div className="fixed bottom-[64px] left-0 right-0 px-4 py-3 z-20"
-        style={{ background: isDark ? 'rgba(26,16,37,0.97)' : 'rgba(240,247,255,0.97)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
+      {/* Export Button */}
+      <div className="mt-8 mb-4">
         <button
           onClick={generatePDF}
           disabled={items.length === 0}
-          className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 disabled:opacity-40"
+          className="w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 active:scale-95 disabled:opacity-40 transition-all"
           style={{ background: `linear-gradient(135deg, ${accent}, ${isDark ? '#a07ac8' : '#5aa0e0'})`, color: '#fff' }}
         >
-          <Download className="w-4 h-4" /> Export PDF & Share on WhatsApp <Share2 className="w-4 h-4" />
+          <Download className="w-5 h-5" /> Export PDF & Share on WhatsApp <Share2 className="w-5 h-5" />
         </button>
       </div>
     </div>

@@ -110,6 +110,28 @@ CREATE TABLE IF NOT EXISTS events (
   created_at timestamptz DEFAULT now()
 );
 
+-- ── Vendor Profile Settings ──────────────────────────────────────
+CREATE TABLE IF NOT EXISTS vendor_profile (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  tagline text,
+  phone text NOT NULL,
+  email text NOT NULL,
+  address text,
+  banner_image text,
+  lat numeric,
+  lng numeric,
+  verified boolean DEFAULT true,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS vendor_gallery (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  vendor_id uuid REFERENCES vendor_profile(id) ON DELETE CASCADE,
+  image_url text NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS payments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id uuid REFERENCES events(id) ON DELETE CASCADE,
@@ -117,6 +139,19 @@ CREATE TABLE IF NOT EXISTS payments (
   payment_type text CHECK (payment_type IN ('advance','balance')),
   razorpay_payment_id text,
   status text CHECK (status IN ('pending','success','failed')) DEFAULT 'pending',
+  created_at timestamptz DEFAULT now()
+);
+
+-- ── Event Packages (Phase 4 Customization) ─────────────────────
+CREATE TABLE IF NOT EXISTS packages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_type text NOT NULL, -- e.g., 'wedding', 'birthday'
+  tier_id text NOT NULL, -- e.g., 'budget', 'standard', 'premium'
+  name text NOT NULL,
+  price numeric NOT NULL,
+  cover_image text NOT NULL,
+  description text NOT NULL,
+  features text[] DEFAULT '{}',
   created_at timestamptz DEFAULT now()
 );
 
@@ -163,6 +198,7 @@ CREATE POLICY "public_read_reviews" ON vendor_reviews FOR SELECT USING (true);
 CREATE POLICY "public_insert_reviews" ON vendor_reviews FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_insert_quotes" ON quotes FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_read_quotes" ON quotes FOR SELECT USING (true);
+CREATE POLICY "public_update_quotes" ON quotes FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "public_insert_designs" ON designs FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_read_designs" ON designs FOR SELECT USING (true);
 CREATE POLICY "public_read_events" ON events FOR SELECT USING (true);
@@ -170,3 +206,4 @@ CREATE POLICY "public_insert_events" ON events FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_update_events" ON events FOR UPDATE USING (true);
 CREATE POLICY "public_read_payments" ON payments FOR SELECT USING (true);
 CREATE POLICY "public_insert_payments" ON payments FOR INSERT WITH CHECK (true);
+

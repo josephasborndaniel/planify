@@ -188,3 +188,91 @@
     line-height: 1.5;
   }
 }
+
+/* ── Admin Portal Light Mode Overrides ── */
+html:not(.dark) .admin-portal .bg-\[\#1a1025\] {
+  background-color: #edf3f8 !important;
+}
+html:not(.dark) .admin-portal .bg-\[\#231534\] {
+  background-color: #e0ebf5 !important;
+}
+html:not(.dark) .admin-portal .bg-\[\#1a1025\]\/50 {
+  background-color: rgba(237, 243, 248, 0.5) !important;
+}
+html:not(.dark) .admin-portal .text-white {
+  color: #0d2d52 !important;
+}
+html:not(.dark) .admin-portal .bg-black\/50.text-white,
+html:not(.dark) .admin-portal .bg-black\/50 .text-white,
+html:not(.dark) .admin-portal .bg-black\/60.text-white,
+html:not(.dark) .admin-portal .bg-black\/60 .text-white,
+html:not(.dark) .admin-portal .bg-black\/70.text-white,
+html:not(.dark) .admin-portal .bg-black\/70 .text-white {
+  color: #ffffff !important;
+}
+html:not(.dark) .admin-portal .text-\[\#c09cde\] {
+  color: #2a7dd4 !important;
+}
+html:not(.dark) .admin-portal .text-purple-300\/60 {
+  color: #3a6898 !important;
+}
+html:not(.dark) .admin-portal .text-purple-300 {
+  color: #2a7dd4 !important;
+}
+html:not(.dark) .admin-portal .border-purple-500\/10 {
+  border-color: rgba(42, 125, 212, 0.1) !important;
+}
+html:not(.dark) .admin-portal .border-purple-500\/20 {
+  border-color: rgba(42, 125, 212, 0.18) !important;
+}
+html:not(.dark) .admin-portal .border-purple-500\/30 {
+  border-color: rgba(42, 125, 212, 0.3) !important;
+}
+html:not(.dark) .admin-portal .border-purple-500\/40 {
+  border-color: rgba(42, 125, 212, 0.4) !important;
+}
+html:not(.dark) .admin-portal .border-purple-500\/50 {
+  border-color: rgba(42, 125, 212, 0.5) !important;
+}
+html:not(.dark) .admin-portal .bg-purple-500 {
+  background-color: #2a7dd4 !important;
+}
+html:not(.dark) .admin-portal .bg-purple-500\/10 {
+  background-color: rgba(42, 125, 212, 0.1) !important;
+}
+html:not(.dark) .admin-portal .bg-purple-500\/20 {
+  background-color: rgba(42, 125, 212, 0.2) !important;
+}
+html:not(.dark) .admin-portal .bg-purple-500\/30 {
+  background-color: rgba(42, 125, 212, 0.3) !important;
+}
+html:not(.dark) .admin-portal .from-purple-500 {
+  --tw-gradient-from: #2a7dd4 !important;
+}
+
+/* Also override some inline styles for charts in the admin using CSS attribute selectors */
+html:not(.dark) .admin-portal [style*="background: #1a1025"],
+html:not(.dark) .admin-portal [style*="background: rgb(26, 16, 37)"] {
+  background: #edf3f8 !important;
+}
+html:not(.dark) .admin-portal [style*="background: #231534"],
+html:not(.dark) .admin-portal [style*="background: rgb(35, 21, 52)"] {
+  background: #e0ebf5 !important;
+}
+html:not(.dark) .admin-portal [style*="border: 1px solid rgba(168, 85, 247"] {
+  border-color: rgba(42, 125, 212, 0.2) !important;
+}
+html:not(.dark) .admin-portal [style*="color: #fff"] {
+  color: #0d2d52 !important;
+}
+html:not(.dark) .admin-portal [fill="#fff"] {
+  fill: #0d2d52 !important;
+}
+html:not(.dark) .admin-portal [style*="color: rgba(216,180,254"],
+html:not(.dark) .admin-portal [style*="color: rgba(216, 180, 254"] {
+  color: #3a6898 !important;
+}
+html:not(.dark) .admin-portal [fill*="rgba(216,180,254"],
+html:not(.dark) .admin-portal [fill*="rgba(216, 180, 254"] {
+  fill: #3a6898 !important;
+}

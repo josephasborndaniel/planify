@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { ResourceRibbon } from './ResourceRibbon';
 import { StageCanvas } from './StageCanvas';
-import { IndianRupee, Share2, Loader2 } from 'lucide-react';
+import { IndianRupee, Share2, Loader2, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { buildWhatsAppLink, saveDesignToSupabase } from '../../lib/whatsapp';
 import html2canvas from 'html2canvas';
@@ -189,6 +189,18 @@ export function DesignStudio({ initialPackage, eventType }: DesignStudioProps) {
           }
           <span className="hidden sm:inline">Share</span>
         </button>
+
+        {/* Clear Background */}
+        {backgroundImage && (
+          <button
+            onClick={() => setBackgroundImage('')}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-bold shadow-lg transition-all active:scale-95 bg-red-500 text-white"
+            title="Remove Background"
+          >
+            <X className="w-4 h-4" />
+            <span className="hidden sm:inline">Clear Bg</span>
+          </button>
+        )}
       </div>
 
       {/* Canvas */}

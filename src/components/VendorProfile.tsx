@@ -46,12 +46,33 @@ function StarRating({ rating, size = 4 }: { rating: number; size?: number }) {
 
 export function VendorProfilePage() {
   const { isDark } = useTheme();
-  const [vendor] = useState<VendorProfile>(DEMO_VENDOR);
+  const [vendor, setVendor] = useState<VendorProfile>(DEMO_VENDOR);
   const [reviews, setReviews] = useState<Partial<VendorReview>[]>(DEMO_REVIEWS);
+  const [gallery, setGallery] = useState<string[]>(DEMO_GALLERY);
   const [galleryIdx, setGalleryIdx] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({ name: '', rating: 5, text: '' });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchVendorData = async () => {
+      const { data: vData } = await supabase.from('vendor_profile').select('*').limit(1).single();
+      if (vData) {
+        setVendor(vData);
+        
+        const { data: gData } = await supabase.from('vendor_gallery').select('image_url').eq('vendor_id', vData.id);
+        if (gData && gData.length > 0) {
+          setGallery(gData.map(g => g.image_url));
+        }
+
+        const { data: rData } = await supabase.from('vendor_reviews').select('*').eq('vendor_id', vData.id).order('created_at', { ascending: false });
+        if (rData && rData.length > 0) {
+          setReviews(rData);
+        }
+      }
+    };
+    fetchVendorData();
+  }, []);
 
   const bg = isDark ? '#1a1025' : '#f0f7ff';
   const card = isDark ? '#231534' : '#ddeeff';
@@ -92,12 +113,15 @@ export function VendorProfilePage() {
 
   const mapsUrl = `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY ?? ''}&q=${vendor.lat},${vendor.lng}&zoom=15`;
 
+  const displayImages = [vendor.banner_image, ...gallery].filter(Boolean);
+  if (displayImages.length === 0) displayImages.push(DEMO_GALLERY[0]);
+
   return (
     <div className="min-h-screen pb-10" style={{ background: bg, color: text }}>
 
       {/* Hero Banner */}
       <div className="relative h-48 overflow-hidden">
-        <img loading="lazy" src={DEMO_GALLERY[galleryIdx]} alt="Vendor" className="w-full h-full object-cover" />
+        <img loading="lazy" src={displayImages[galleryIdx % displayImages.length]} alt="Vendor" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center gap-2">
@@ -106,14 +130,16 @@ export function VendorProfilePage() {
           </div>
           <p className="text-sm text-white/80 mt-0.5">{vendor.tagline}</p>
         </div>
-        <div className="absolute bottom-4 right-4 flex gap-1">
-          {DEMO_GALLERY.map((_, i) => (
-            <button key={i} onClick={() => setGalleryIdx(i)}
-              className="w-1.5 h-1.5 rounded-full transition-all"
-              style={{ background: i === galleryIdx ? '#fff' : 'rgba(255,255,255,0.5)' }}
-            />
-          ))}
-        </div>
+        {displayImages.length > 1 && (
+          <div className="absolute bottom-4 right-4 flex gap-1">
+            {displayImages.map((_, i) => (
+              <button key={i} onClick={() => setGalleryIdx(i)}
+                className="w-1.5 h-1.5 rounded-full transition-all"
+                style={{ background: i === (galleryIdx % displayImages.length) ? '#fff' : 'rgba(255,255,255,0.5)' }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="px-4 py-4 space-y-4">
@@ -166,7 +192,7 @@ export function VendorProfilePage() {
             <p className="text-sm font-bold" style={{ color: text }}>Gallery</p>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {DEMO_GALLERY.map((img, i) => (
+            {gallery.map((img, i) => (
               <button key={i} onClick={() => setGalleryIdx(i)}
                 className="aspect-video rounded-2xl overflow-hidden transition-all active:scale-95"
                 style={{ border: i === galleryIdx ? `2px solid ${accent}` : `1px solid ${border}` }}
