@@ -197,7 +197,7 @@ export default function AnalyticsDashboard() {
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 24 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 16, marginBottom: 24 }}>
 
       {/* ── Card 1: Bookings bar chart ─────────────────────────────────────── */}
       <div style={{ background: '#231534', borderRadius: 20, border: '1px solid rgba(168,85,247,0.2)', padding: 20, gridColumn: 'span 1' }}>
