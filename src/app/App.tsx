@@ -245,6 +245,7 @@ export default function App() {
             <div className="flex flex-col gap-2 pt-1">
               <input 
                 type="date" 
+                min={new Date().toISOString().split('T')[0]}
                 value={eventDate} 
                 onChange={e => setEventDate(e.target.value)}
                 className="w-full px-3 py-3 rounded-xl text-sm outline-none font-bold"
@@ -257,8 +258,28 @@ export default function App() {
                       alert("Please select an event date first.");
                       return;
                     }
+                    
+                    const today = new Date().toISOString().split('T')[0];
+                    if (eventDate < today) {
+                      alert("You cannot book a past date.");
+                      return;
+                    }
+                    
                     const eventName = selectedEvent ? EVENTS.find(e => e.id === selectedEvent)?.title : 'Event';
                     
+                    // Check for duplicate requests
+                    const { data: existing } = await supabase
+                      .from('quotes')
+                      .select('id')
+                      .eq('client_name', 'App User (Package Booking)')
+                      .eq('event_type', eventName)
+                      .eq('event_date', eventDate);
+
+                    if (existing && existing.length > 0) {
+                      alert("You have already requested a booking for this event on this date.");
+                      return;
+                    }
+
                     // Save order to Supabase
                     await supabase.from('quotes').insert([{
                       quote_type: 'package',
